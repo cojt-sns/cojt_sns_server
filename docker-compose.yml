@@ -1,0 +1,28 @@
+version: "3"
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - mysql-data:/var/lib/mysql
+  api:
+    build: .
+    command: rails server -b 0.0.0.0 -p 4000
+    volumes:
+      - .:/opt/app
+      - app-bundle:/usr/local/bundle
+    ports:
+      - "4000:4000"
+    links:
+      - db
+    environment:
+      EDITOR: vi
+    env_file: .env
+
+volumes:
+  app-bundle:
+  mysql-data:
