@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
     def health_check
-        render json: {"message": "success"}
+        tags = Tag.count
+        render json: {"message": "success", "tags": tags}
     end
 end
