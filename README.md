@@ -48,3 +48,7 @@ docker-compose run api <Rails コマンド>
 ```
 docker-compose run api rake db:migrate:reset db:seed
 ```
+
+## DB設計
+
+![DB](docs/db.png)
