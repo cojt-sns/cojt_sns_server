@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 2020_06_02_115350) do
   create_table "authenticate_tokens", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "token"
     t.integer "user_id"
-    t.boolean "active"
+    t.boolean "active", default: true
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -68,6 +68,8 @@ ActiveRecord::Schema.define(version: 2020_06_02_115350) do
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.text "bio"
+    t.string "email"
+    t.string "password_digest"
     t.string "icon_url"
     t.string "oauth_token"
     t.string "oauth_token_secret"
