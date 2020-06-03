@@ -45,5 +45,7 @@ class AuthController < ApplicationController
       render json: { "message": "ログアウトできませんでした。" }, status: 500
       return
     end
+
+    render json: { "code": 200, "message": "ログアウトしました。" }
   end
 end
