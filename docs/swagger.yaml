@@ -143,6 +143,10 @@ paths:
             "application/json":
               schema:
                 $ref: '#/components/schemas/Tag'
+        "402":
+          description: "認証不正"
+        "500":
+          description: "Internal Server Error"
   /tags/{id}:
     get:
       tags:
@@ -163,6 +167,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Tag"
+        "404":
+          description: "IDが存在しない"
+        "500":
+          description: "Internal Server Error"
 components:  
   securitySchemes:
     Bearer:
@@ -235,6 +243,3 @@ components:
       description: "タグの検索結果"
       items:
         $ref: '#/components/schemas/TagSearchResultCandidate'
-externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
