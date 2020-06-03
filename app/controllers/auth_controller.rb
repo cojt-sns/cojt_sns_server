@@ -3,13 +3,12 @@ class AuthController < ApplicationController
 
   # POST /auth/login
   def login()
-    puts params[:email].class
 
+    #email,password が送信されたか確認
     if params[:email].nil?
       render json: { "code": 400, "message": "メールアドレスを入力してください"}, status: 400
       return
     end
-
     if params[:password].nil?
       render json: { "code": 400, "message": "パスワードを入力してください"}, status: 400
       return
@@ -45,6 +44,12 @@ class AuthController < ApplicationController
 
   # POST /auth/logout
   def logout()
+    #tokenが送信されたか確認
+    if params[:autn_token].nil?
+      render json: { "code": 400, "message": "ログイン情報がないため、ログアウトできません"}, status: 400
+      return
+    end
+
     auth = AuthenticateToken.find_by(token: params[:auth_token])
 
     # トークンの存在を確認
