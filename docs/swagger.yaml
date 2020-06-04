@@ -171,6 +171,108 @@ paths:
           description: "IDが存在しない"
         "500":
           description: "Internal Server Error"
+  /group:
+    get:
+      tags:
+      - "Group"
+      summary: "グループを検索する"
+      operationId: "searchGroup"
+      parameters:
+        - name: "name"
+          in: "query"
+          description: "検索name 指定しない場合は全件検索"
+          required: false
+          schema:
+            type: "string"
+        - name: "tag"
+          in: "query"
+          description: "検索 tag 指定しない場合は全件検索"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            "application/json":
+              schema:
+                $ref: '#/components/schemas/GroupSearchResult'
+        "500":
+          description: "Internal Server Error"
+    post:
+      tags:
+      - "Group"
+      security:
+      - Bearer: []
+      summary: "グループを作る"
+      operationId: "postGroup"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            "application/json":
+              schema:
+                $ref: '#/components/schemas/Group'
+        "402":
+          description: "認証不正"
+        "500":
+          description: "Internal Server Error"
+  /group/{id}: #{name}でもいいのか?
+    get:
+      tags:
+      - "Tag"
+      summary: "IDからGroupを取得する"
+      operationId: "getGroup"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "GroupのID"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+        "404":
+          description: "IDが存在しない"
+        "500":
+          description: "Internal Server Error"
+    put:
+      tags:
+      - "Group"
+      summary: "Updated Group"
+      description: "グループの情報を更新する"
+      operationId: "updateGroup"
+      requestBody:
+        description: "Updated Group object"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Group"
+      responses:
+        "200":
+            description: "successful operation"
+            content:
+              "application/json":
+                schema:
+                  $ref: '#/components/schemas/Group'
+        "400":
+          description: "Invalid user supplied"
+        "404":
+          description: "IDが存在しない"
+        "500":
+          description: "Internal Server Error"
 components:  
   securitySchemes:
     Bearer:
@@ -243,3 +345,38 @@ components:
       description: "タグの検索結果"
       items:
         $ref: '#/components/schemas/TagSearchResultCandidate'
+    Group:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          example: 1
+          readOnly: true
+        name:
+          type: "string"
+          description: "グループ名"
+          example: "筑波大学スマブラ同好会"
+        twitter_traceability:
+          type: "boolean"
+          description: "ツイッターから見れるかどうか?"
+          readOnly: true
+        questions:
+          type: "string"
+          description: "参加者のプロフィールの質問事項"
+          example: "{スマブラのプレイ時間は?,好きなキャラは?}"
+          readOnly: true
+        introduction:
+          type: "boolean"
+          description: "プロフィールに自己紹介(自由記述)があるか?"
+          readOnly: true
+    GroupSearchResult:
+      type: array
+      description: "グループの検索結果"
+      items:
+        $ref: '#/components/schemas/GroupSearchResultCandidate'
+    GroupSearchResultCandidate:
+      type: object
+      description: "グループの検索結果1件"
+      properties:
+        group:
+          $ref: '#/components/schemas/Group'
