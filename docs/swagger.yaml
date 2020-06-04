@@ -1,4 +1,6 @@
-swagger: "2.0"
+openapi: "3.0.0"
+servers:
+  - url: https://localhost:4000
 info:
   description: ""
   version: "1.0.0"
@@ -6,12 +8,8 @@ info:
 tags:
 - name: "user"
   description: "Operations about user"
-  externalDocs:
-    description: ""
-    url: "http://swagger.io"
-schemes:
-- "https"
-- "http"
+- name: "Tag"
+  description: "タグについての操作"
 paths:
   /user:
     post:
@@ -20,67 +18,13 @@ paths:
       summary: "Create user"
       description: "This can only be done by the logged in user."
       operationId: "createUser"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
+      requestBody:
         description: "Created user object"
         required: true
-        schema:
-          $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/login:
-    get:
-      tags:
-      - "user"
-      summary: "Logs user into the system"
-      description: ""
-      operationId: "loginUser"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters:
-      - name: "username"
-        in: "query"
-        description: "The user name for login"
-        required: true
-        type: "string"
-      - name: "password"
-        in: "query"
-        description: "The password for login in clear text"
-        required: true
-        type: "string"
-      responses:
-        "200":
-          description: "successful operation"
-          schema:
-            type: "string"
-          headers:
-            X-Rate-Limit:
-              type: "integer"
-              format: "int32"
-              description: "calls per hour allowed by the user"
-            X-Expires-After:
-              type: "string"
-              format: "date-time"
-              description: "date in UTC when token expires"
-        "400":
-          description: "Invalid username/password supplied"
-  /user/logout:
-    get:
-      tags:
-      - "user"
-      summary: "Logs out current logged in user session"
-      description: ""
-      operationId: "logoutUser"
-      produces:
-      - "application/xml"
-      - "application/json"
-      parameters: []
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
       responses:
         default:
           description: "successful operation"
@@ -91,20 +35,20 @@ paths:
       summary: "Get user by user name"
       description: ""
       operationId: "getUserByName"
-      produces:
-      - "application/xml"
-      - "application/json"
       parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be fetched. Use user1 for testing. "
-        required: true
-        type: "string"
+        - name: "username"
+          in: "path"
+          description: "The name that needs to be fetched. Use user1 for testing. "
+          required: true
+          schema:
+            type: "string"
       responses:
         "200":
           description: "successful operation"
-          schema:
-            $ref: "#/definitions/User"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
         "400":
           description: "Invalid username supplied"
         "404":
@@ -115,21 +59,20 @@ paths:
       summary: "Updated user"
       description: "This can only be done by the logged in user."
       operationId: "updateUser"
-      produces:
-      - "application/xml"
-      - "application/json"
       parameters:
-      - name: "username"
-        in: "path"
-        description: "name that need to be updated"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "body"
+        - name: "username"
+          in: "path"
+          description: "name that need to be updated"
+          required: true
+          schema:
+            type: "string"
+      requestBody:
         description: "Updated user object"
         required: true
-        schema:
-          $ref: "#/definitions/User"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
       responses:
         "400":
           description: "Invalid user supplied"
@@ -141,21 +84,162 @@ paths:
       summary: "Delete user"
       description: "This can only be done by the logged in user."
       operationId: "deleteUser"
-      produces:
-      - "application/xml"
-      - "application/json"
       parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be deleted"
-        required: true
-        type: "string"
+        - name: "username"
+          in: "path"
+          description: "The name that needs to be deleted"
+          required: true
+          schema:
+            type: "string"
       responses:
         "400":
           description: "Invalid username supplied"
         "404":
           description: "User not found"
-
-externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
+  /tags:
+    get:
+      tags:
+      - "Tag"
+      summary: "タグを検索する"
+      operationId: "searchTag"
+      parameters:
+        - name: "name"
+          in: "query"
+          description: "検索name 指定しない場合は全件検索"
+          schema:
+            type: "string"
+        - name: "descendants"
+          in: "query"
+          description: "返却する子孫の世代数"
+          schema:
+            type: "integer"
+            default: 0
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            "application/json":
+              schema:
+                $ref: '#/components/schemas/TagSearchResult'
+        "500":
+          description: "Internal Server Error"
+    post:
+      tags:
+      - "Tag"
+      security:
+      - Bearer: []
+      summary: "タグを登録する"
+      operationId: "postTag"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            "application/json":
+              schema:
+                $ref: '#/components/schemas/Tag'
+        "402":
+          description: "認証不正"
+        "500":
+          description: "Internal Server Error"
+  /tags/{id}:
+    get:
+      tags:
+      - "Tag"
+      summary: "IDからTagを取得する"
+      operationId: "getTag"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "TagのID"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tag"
+        "404":
+          description: "IDが存在しない"
+        "500":
+          description: "Internal Server Error"
+components:  
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      description: Credentials or access token for API
+  schemas:
+    User:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+        petId:
+          type: "integer"
+          format: "int64"
+        quantity:
+          type: "integer"
+          format: "int32"
+        shipDate:
+          type: "string"
+          format: "date-time"
+        status:
+          type: "string"
+          description: "Order Status"
+          enum:
+          - "placed"
+          - "approved"
+          - "delivered"
+        complete:
+          type: "boolean"
+          default: false
+    Tag:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          example: 1
+          readOnly: true
+        name:
+          type: "string"
+          description: "タグ名"
+          example: "情報メディア創成学類"
+        parent_id:
+          type: "integer"
+          description: "親タグID"
+        fullname:
+          type: "string"
+          description: "フルタグ名"
+          example: "筑波大学.情報学群.情報メディア創成学類"
+          readOnly: true
+    TagSearchResultCandidate:
+      type: object
+      description: "タグの検索結果1件"
+      properties:
+        tag:
+          $ref: '#/components/schemas/Tag'
+        ancestors:
+          type: array
+          description: "tagの先祖idたち(親から)"
+          items:
+            $ref: '#/components/schemas/Tag'
+        children:
+          type: array
+          description: "tagの子孫idたち(子から)"
+          items:
+            $ref: '#/components/schemas/Tag'
+    TagSearchResult:
+      type: array
+      description: "タグの検索結果"
+      items:
+        $ref: '#/components/schemas/TagSearchResultCandidate'
