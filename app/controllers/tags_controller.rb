@@ -34,12 +34,28 @@ class TagsController < ApplicationController
 
   # GET /tags/{id}
   def show
-    render json: {
-      "id": 1,
-      "name": "情報メディア創成学類",
-      "parent_id": 0,
-      "fullname": "筑波大学.情報学群.情報メディア創成学類"
+    # パラメータチェック
+    if params[:id].nil? && params[:id] =~ /[^0-9]+$/
+      render state: 400
+      return
+    end
+
+    tag = Tag.find_by(id: params[:id])
+
+    # 存在チェック
+    if tag.nil?
+      render state: 404
+      return
+    end
+
+    # 正常系
+    json = {
+      "id": tag.id,
+      "name": tag.name,
+      "parent_id": tag.parent_id,
+      "fullname": tag.fullname
     }
+    render json: json
   end
 
   # POST /tag
