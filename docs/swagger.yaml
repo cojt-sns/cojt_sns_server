@@ -167,7 +167,7 @@ paths:
             type: "string"
         - name: "descendants"
           in: "query"
-          description: "返却する子孫の世代数"
+          description: "返却する子孫の世代数(0以上)"
           schema:
             type: "integer"
             default: 0
@@ -177,7 +177,9 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/TagSearchResult"
+                $ref: '#/components/schemas/TagSearchResult'
+        "400":
+          description: "リクエスト不正"
         "500":
           description: "Internal Server Error"
     post:

@@ -6,7 +6,7 @@ class TagsController < ApplicationController
   def index
     #パラメータチェック
     if params[:descendants].present? && (params[:descendants] =~ /[^0-9]+/ || params[:descendants].to_i < 0)
-      render json: { "code": 400, "message": "descendantsの指定が不適切です。"}
+      render json: { "code": 400, "message": "descendantsの指定が不適切です。"}, status: 400
       return
     end
 
