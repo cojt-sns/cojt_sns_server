@@ -7,3 +7,7 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 user = User.create(email: 'test@test.com', password: 'abcd1234', name: 'test')
+
+tag = Tag.create(name: 'スマブラ')
+
+group = Group.create(public: true, twitter_traceability: true, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag])
