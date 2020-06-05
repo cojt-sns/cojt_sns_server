@@ -2,40 +2,35 @@ class TagsController < ApplicationController
   before_action :authenticate, only: [:create]
   
   # GET /tags
+  # タグ検索
   def index
-    render json: 
-      [
-        {
-          "tag": {
-            "id": 1,
-            "name": "情報メディア創成学類",
-            "parent_id": 0,
-            "fullname": "筑波大学.情報学群.情報メディア創成学類"
-          },
-          "ancestors": [
-            {
-              "id": 1,
-              "name": "情報メディア創成学類",
-              "parent_id": 0,
-              "fullname": "筑波大学.情報学群.情報メディア創成学類"
-            }
-          ],
-          "children": [
-            {
-              "id": 1,
-              "name": "情報メディア創成学類",
-              "parent_id": 0,
-              "fullname": "筑波大学.情報学群.情報メディア創成学類"
-            }
-          ]
-        }
-      ]
+    #パラメータチェック
+    if params[:descendants].present? && (params[:descendants] =~ /[^0-9]+/ || params[:descendants].to_i < 0)
+      render json: { "code": 400, "message": "descendantsの指定が不適切です。"}
+      return
+    end
+
+    descendants = params[:descendants].present? ? params[:descendants].to_i : 0
+    
+    tags = Tag.where('name like ?', "%#{params[:name]}%")
+
+    res = []
+    tags.each do |tag|
+      res << {
+        "tag": tag.json,
+        "ancestors": tag.ancestors.map{|t| t.json},
+        "descendants": tag.descendants.select{|t| t.tree_level - tag.tree_level <= descendants}.map{|t| t.json}
+      }
+    end
+
+    render json: res
   end
 
   # GET /tags/{id}
+  # タグ取得
   def show
     # パラメータチェック
-    if params[:id].nil? || params[:id] =~ /[^0-9]+$/
+    if params[:id].nil? || params[:id] =~ /[^0-9]+/
       render json: {code: "400", message: "Bad Request"}, status: 400
       return
     end
@@ -48,16 +43,11 @@ class TagsController < ApplicationController
     end
 
     # 正常系
-    json = {
-      "id": tag.id,
-      "name": tag.name,
-      "parent_id": tag.parent_id,
-      "fullname": tag.fullname
-    }
-    render json: json
+    render json: tag.json
   end
 
   # POST /tag
+  # タグ作成
   def create
     # パラメータチェック
     if params[:name].nil? || params[:name] =~ /[\.\#@\/\\]+/
@@ -99,11 +89,6 @@ class TagsController < ApplicationController
     end
 
     # 正常系
-    render json: {
-      "id": tag.id,
-      "name": tag.name,
-      "parent_id": tag.parent_id,
-      "fullname": tag.fullname
-    }
+    render json: tag.json
   end
 end

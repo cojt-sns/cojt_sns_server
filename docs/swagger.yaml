@@ -452,8 +452,8 @@ components:
           type: array
           description: "tagの先祖idたち(親から)"
           items:
-            $ref: "#/components/schemas/Tag"
-        children:
+            $ref: '#/components/schemas/Tag'
+        descendants:
           type: array
           description: "tagの子孫idたち(子から)"
           items:

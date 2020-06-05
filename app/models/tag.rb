@@ -8,10 +8,21 @@ class Tag < ApplicationRecord
   validate :same_hierarchy_same_name
   validate :ancestors_same_name
 
+  # 先祖タグ名前を結合して返す
   def fullname
     names = self.ancestors.map{|t| t.name}.reverse
     names << self.name
     names.join('.')
+  end
+
+  # JSONを返す
+  def json
+    {
+      "id": self.id,
+      "name": self.name,
+      "parent_id": self.parent_id,
+      "fullname": self.fullname
+    }
   end
 
   # validates
