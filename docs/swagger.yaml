@@ -199,7 +199,9 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/Tag"
+                $ref: '#/components/schemas/Tag'
+        "400":
+          description: "リクエスト不正"
         "402":
           description: "認証不正"
         "500":

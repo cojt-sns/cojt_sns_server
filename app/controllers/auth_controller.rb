@@ -28,8 +28,6 @@ class AuthController < ApplicationController
       return
     end
 
-    
-
     #AuthenticateToken生成
     auth = AuthenticateToken.new
     auth.user = user
