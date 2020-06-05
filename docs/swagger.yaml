@@ -225,7 +225,122 @@ paths:
               schema:
                 $ref: "#/components/schemas/Tag"
         "404":
-          description: "IDが存在しない"
+          description: "そのIDのグループが存在しない"
+        "500":
+          description: "Internal Server Error"
+  /groups:
+    get:
+      tags:
+      - "Group"
+      summary: "グループを検索する"
+      operationId: "searchGroup"
+      parameters:
+        - name: "tagId"
+          in: "query"
+          description: "検索 tagId 指定しない場合は全件検索 privateのグループは見れないようにする"
+          required: false
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation "
+          content:
+            "application/json":
+              schema:
+                $ref: '#/components/schemas/GroupSearchResult'
+        "402":
+          description: "認証不正"
+        "500":
+          description: "Internal Server Error"
+    post:
+      tags:
+      - "Group"
+      security:
+      - Bearer: []
+      summary: "グループを作る"
+      operationId: "postGroup"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            "application/json":
+              schema:
+                $ref: '#/components/schemas/Group'
+        "400":
+          description: "不正なリクエストです。"
+        "402":
+          description: "認証不正"
+        "500":
+          description: "Internal Server Error"
+  /groups/{id}:
+    get:
+      tags:
+      - "Group"
+      summary: "IDからGroupを取得する"
+      operationId: "getGroup"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "GroupのID"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+        "403":
+          description: "不正なアクセスです。"
+        "404":
+          description: "そのIDのグループが存在しない"
+        "500":
+          description: "Internal Server Error"
+    put:
+      tags:
+      - "Group"
+      security:
+        - Bearer: []
+      summary: "Updated Group"
+      description: "グループの情報を更新する"
+      operationId: "updateGroup"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "GroupのID"
+          required: true
+          schema:
+            type: "integer"
+      requestBody:
+        description: "Updated Group object"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Group"
+      responses:
+        "200":
+            description: "successful operation"
+            content:
+              "application/json":
+                schema:
+                  $ref: '#/components/schemas/Group'
+        "400":
+          description: "Invalid user supplied"
+        "402":
+          description: "認証不正"
+        "403":
+          description: "不正なアクセスです。"
+        "404":
+          description: "そのIDのグループが存在しない"
         "500":
           description: "Internal Server Error"
 components:
@@ -340,4 +455,46 @@ components:
       type: array
       description: "タグの検索結果"
       items:
-        $ref: "#/components/schemas/TagSearchResultCandidate"
+        $ref: '#/components/schemas/TagSearchResultCandidate'
+    Group:
+      type: "object"
+      required:
+        - id
+        - questions
+        - tags
+      properties:
+        id:
+          type: "integer"
+          example: 1
+          readOnly: true
+        twitter_traceability:
+          type: "boolean"
+          description: "ツイッターから見れるかどうか?"
+          default: false
+        questions:
+          type: "array"
+          items:
+            type: string
+            example: "スマブラのプレイ時間は?" 
+          description: "参加者のプロフィールの質問事項"
+        introduction:
+          type: "boolean"
+          description: "プロフィールに自己紹介(自由記述)があるか?"
+          default: false
+        tags:
+          type: array
+          items:
+            type: integer
+          description: "タグidの配列"
+          
+    GroupSearchResult:
+      type: array
+      description: "グループの検索結果"
+      items:
+        $ref: '#/components/schemas/GroupSearchResultCandidate'
+    GroupSearchResultCandidate:
+      type: object
+      description: "グループの検索結果1件"
+      properties:
+        group:
+          $ref: '#/components/schemas/Group'
