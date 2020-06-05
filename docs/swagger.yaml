@@ -297,6 +297,7 @@ components:
           type: "string"
           description: "パスワード"
           example: "password"
+          writeOnly: true
         oauth_token:
           type: "string"
           description: "Twitterのアクセストークン"
