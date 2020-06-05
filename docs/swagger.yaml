@@ -255,6 +255,13 @@ paths:
       summary: "Updated Group"
       description: "グループの情報を更新する"
       operationId: "updateGroup"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "GroupのID"
+          required: true
+          schema:
+            type: "integer"
       requestBody:
         description: "Updated Group object"
         required: true
