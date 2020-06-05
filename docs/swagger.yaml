@@ -171,19 +171,13 @@ paths:
           description: "IDが存在しない"
         "500":
           description: "Internal Server Error"
-  /group:
+  /groups:
     get:
       tags:
       - "Group"
       summary: "グループを検索する"
       operationId: "searchGroup"
       parameters:
-        - name: "name"
-          in: "query"
-          description: "検索name 指定しない場合は全件検索"
-          required: false
-          schema:
-            type: "string"
         - name: "tag"
           in: "query"
           description: "検索 tag 指定しない場合は全件検索"
@@ -223,10 +217,10 @@ paths:
           description: "認証不正"
         "500":
           description: "Internal Server Error"
-  /group/{id}: #{name}でもいいのか?
+  /groups/{id}:
     get:
       tags:
-      - "Tag"
+      - "Group"
       summary: "IDからGroupを取得する"
       operationId: "getGroup"
       parameters:
@@ -352,23 +346,21 @@ components:
           type: "integer"
           example: 1
           readOnly: true
-        name:
-          type: "string"
-          description: "グループ名"
-          example: "筑波大学スマブラ同好会"
         twitter_traceability:
           type: "boolean"
           description: "ツイッターから見れるかどうか?"
-          readOnly: true
         questions:
           type: "string"
           description: "参加者のプロフィールの質問事項"
           example: "{スマブラのプレイ時間は?,好きなキャラは?}"
-          readOnly: true
         introduction:
           type: "boolean"
           description: "プロフィールに自己紹介(自由記述)があるか?"
-          readOnly: true
+        tags:
+          type: array
+          items:
+            type: integer
+          description: "タグidの配列" 
     GroupSearchResult:
       type: array
       description: "グループの検索結果"
