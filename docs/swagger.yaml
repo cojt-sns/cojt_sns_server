@@ -6,10 +6,10 @@ info:
   version: "1.0.0"
   title: "cojt_sns_api"
 tags:
-- name: "user"
-  description: "Operations about user"
-- name: "Tag"
-  description: "タグについての操作"
+  - name: "User"
+    description: "Operations about user"
+  - name: "Tag"
+    description: "タグについての操作"
 paths:
   /users:
     post:
@@ -17,44 +17,12 @@ paths:
         - "User"
       summary: "ユーザーの新規作成"
       operationId: "createUser"
-      parameters:
-        - name: "id"
-          in: "query"
-          description: "ユーザーid"
-          required: true
-          schema:
-            type: "integer"
-        - name: "name"
-          in: "query"
-          description: "ユーザー名"
-          schema:
-            type: "string"
-        - name: "bio"
-          in: "query"
-          description: "プロフィール"
-          schema:
-            type: "string"
-        - name: "email"
-          in: "query"
-          description: "メールアドレス"
-          required: true
-          schema:
-            type: "string"
-        - name: "icon_filename"
-          in: "query"
-          description: "アイコン画像のファイル名"
-          schema:
-            type: "string"
-        - name: "oauth_token"
-          in: "query"
-          description: "アクセストークン"
-          schema:
-            type: "string"
-        - name: "oauth_token_secret"
-          in: "query"
-          description: "アクセストークン"
-          schema:
-            type: "integer"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreateBody"
       responses:
         "200":
           description: "successful operation"
@@ -94,46 +62,15 @@ paths:
       tags:
         - "User"
       security:
-      - Bearer: []
+        - Bearer: []
       summary: "ユーザー情報の更新"
       operationId: "updateUser"
-      parameters:
-        - name: "id"
-          in: "query"
-          description: "ユーザーid"
-          required: true
-          schema:
-            type: "integer"
-        - name: "name"
-          in: "query"
-          description: "ユーザー名"
-          schema:
-            type: "string"
-        - name: "bio"
-          in: "query"
-          description: "プロフィール"
-          schema:
-            type: "string"
-        - name: "email"
-          in: "query"
-          description: "メールアドレス"
-          schema:
-            type: "string"
-        - name: "icon_filename"
-          in: "query"
-          description: "アイコン画像のファイル名"
-          schema:
-            type: "string"
-        - name: "oauth_token"
-          in: "query"
-          description: "アクセストークン"
-          schema:
-            type: "string"
-        - name: "oauth_token_secret"
-          in: "query"
-          description: "アクセストークン"
-          schema:
-            type: "string"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreateBody"
       responses:
         "400":
           description: "Invalid user supplied"
@@ -147,7 +84,7 @@ paths:
       tags:
         - "User"
       security:
-      - Bearer: []
+        - Bearer: []
       summary: "ユーザーの削除"
       operationId: "deleteUser"
       parameters:
@@ -185,7 +122,7 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: '#/components/schemas/UserTags'
+                $ref: "#/components/schemas/UserTags"
         "500":
           description: "Internal Server Error"
   /users/{id}/twitter_profile:
@@ -193,7 +130,7 @@ paths:
       tags:
         - "User"
       security:
-      - Bearer: []
+        - Bearer: []
       summary: "特定のユーザーのTwitterプロフィールを取得する"
       operationId: "getUserTags"
       parameters:
@@ -209,7 +146,7 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: '#/components/schemas/UserProfile'
+                $ref: "#/components/schemas/UserProfile"
         "403":
           description: "Forbidden"
         "404":
@@ -219,7 +156,7 @@ paths:
   /tags:
     get:
       tags:
-      - "Tag"
+        - "Tag"
       summary: "タグを検索する"
       operationId: "searchTag"
       parameters:
@@ -240,14 +177,14 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: '#/components/schemas/TagSearchResult'
+                $ref: "#/components/schemas/TagSearchResult"
         "500":
           description: "Internal Server Error"
     post:
       tags:
-      - "Tag"
+        - "Tag"
       security:
-      - Bearer: []
+        - Bearer: []
       summary: "タグを登録する"
       operationId: "postTag"
       requestBody:
@@ -255,14 +192,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Tag'
+              $ref: "#/components/schemas/Tag"
       responses:
         "200":
           description: "successful operation"
           content:
             "application/json":
               schema:
-                $ref: '#/components/schemas/Tag'
+                $ref: "#/components/schemas/Tag"
         "402":
           description: "認証不正"
         "500":
@@ -270,7 +207,7 @@ paths:
   /tags/{id}:
     get:
       tags:
-      - "Tag"
+        - "Tag"
       summary: "IDからTagを取得する"
       operationId: "getTag"
       parameters:
@@ -291,7 +228,7 @@ paths:
           description: "IDが存在しない"
         "500":
           description: "Internal Server Error"
-components:  
+components:
   securitySchemes:
     Bearer:
       type: http
@@ -301,7 +238,7 @@ components:
     User:
       type: "object"
       properties:
-        id: 
+        id:
           type: "integer"
         name:
           type: "string"
@@ -316,7 +253,7 @@ components:
       type: array
       description: "ユーザーに紐づくタグの検索結果(配列)"
       items:
-        $ref: '#/components/schemas/Tag'
+        $ref: "#/components/schemas/Tag"
     UserProfile:
       type: object
       description: "Twitterのユーザープロフィール情報"
@@ -336,6 +273,34 @@ components:
           type: "string"
           description: "TwitterのBIO"
           example: "https://pbs.twimg.com/profile_images/..."
+    UserCreateBody:
+      type: object
+      description: "Twitterのユーザープロフィール情報"
+      properties:
+        id:
+          type: "integer"
+          example: "1"
+        name:
+          type: "string"
+          description: "Twitterのユーザー名"
+          example: "うしゅ"
+        bio:
+          type: "string"
+          description: "TwitterのBIO"
+          example: "klis18/AmCr @karahajimaru"
+        image_url:
+          type: "string"
+          description: "プロフィール画像"
+          format: binary
+          example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAE1JREFUOI1jYBgFWEF6aur/9NTU/7j4yICJUssoNgAO8DkTnzqKXcCIzyZk/szZs7GqxSqIyyvYDKG+FwgFJLor8Lpg5uzZjLj8PngAAIkFIS4IIkrMAAAAAElFTkSuQmCC"
+        oauth_token:
+          type: "string"
+          description: "Twitterのアクセストークン"
+          example: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+        oauth_token_secret:
+          type: "string"
+          description: "Twitterのアクセストークン"
+          example: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
     Tag:
       type: "object"
       properties:
@@ -360,19 +325,19 @@ components:
       description: "タグの検索結果1件"
       properties:
         tag:
-          $ref: '#/components/schemas/Tag'
+          $ref: "#/components/schemas/Tag"
         ancestors:
           type: array
           description: "tagの先祖idたち(親から)"
           items:
-            $ref: '#/components/schemas/Tag'
+            $ref: "#/components/schemas/Tag"
         children:
           type: array
           description: "tagの子孫idたち(子から)"
           items:
-            $ref: '#/components/schemas/Tag'
+            $ref: "#/components/schemas/Tag"
     TagSearchResult:
       type: array
       description: "タグの検索結果"
       items:
-        $ref: '#/components/schemas/TagSearchResultCandidate'
+        $ref: "#/components/schemas/TagSearchResultCandidate"
