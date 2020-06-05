@@ -7,3 +7,9 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 user = User.create(email: 'test@test.com', password: 'abcd1234', name: 'test')
+
+tag1 = Tag.create(name: "筑波大学")
+tag2 = tag1.children.create(name: "情報学群")
+tag3 = tag2.children.create(name: "情報メディア創成学類")
+tag4 = tag2.children.create(name: "知識情報・図書館学類")
+tag5 = tag2.children.create(name: "情報科学類")
