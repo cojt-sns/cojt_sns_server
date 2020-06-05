@@ -36,15 +36,14 @@ class TagsController < ApplicationController
   def show
     # パラメータチェック
     if params[:id].nil? && params[:id] =~ /[^0-9]+$/
-      render state: 400
+      render json: {code: "400", message: "Bad Request"}, status: 400
       return
     end
 
     tag = Tag.find_by(id: params[:id])
-
     # 存在チェック
     if tag.nil?
-      render state: 404
+      render json: {code: "404", message: "存在しないTagです"}, status: 404
       return
     end
 
