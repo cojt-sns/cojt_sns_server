@@ -1,6 +1,6 @@
 openapi: "3.0.0"
 servers:
-  - url: https://localhost:4000
+  - url: http://localhost:4000
 info:
   description: ""
   version: "1.0.0"
@@ -167,7 +167,7 @@ paths:
             type: "string"
         - name: "descendants"
           in: "query"
-          description: "返却する子孫の世代数"
+          description: "返却する子孫の世代数(0以上)"
           schema:
             type: "integer"
             default: 0
@@ -177,7 +177,9 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/TagSearchResult"
+                $ref: '#/components/schemas/TagSearchResult'
+        "400":
+          description: "リクエスト不正"
         "500":
           description: "Internal Server Error"
     post:
@@ -199,7 +201,9 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/Tag"
+                $ref: '#/components/schemas/Tag'
+        "400":
+          description: "リクエスト不正"
         "402":
           description: "認証不正"
         "500":
@@ -450,8 +454,8 @@ components:
           type: array
           description: "tagの先祖idたち(親から)"
           items:
-            $ref: "#/components/schemas/Tag"
-        children:
+            $ref: '#/components/schemas/Tag'
+        descendants:
           type: array
           description: "tagの子孫idたち(子から)"
           items:

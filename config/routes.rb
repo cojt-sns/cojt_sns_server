@@ -3,4 +3,6 @@ Rails.application.routes.draw do
 
   post 'auth/login'
   post 'auth/logout'
+
+  resources :tags, only: [:index, :show, :create]
 end
