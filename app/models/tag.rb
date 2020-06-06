@@ -1,8 +1,10 @@
 class Tag < ApplicationRecord
   acts_as_tree
 
+  # rubocop:disable Rails/HasAndBelongsToMany
   has_and_belongs_to_many :users
   has_and_belongs_to_many :groups
+  # rubocop:enable Rails/HasAndBelongsToMany
 
   validates :name, format: { with: /\A[^\.\#@\/\\]+\z/ }
   validate :same_hierarchy_same_name
