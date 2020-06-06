@@ -49,17 +49,6 @@ class TagsController < ApplicationController
   # POST /tag
   # タグ作成
   def create
-    # パラメータチェック
-    if params[:name].nil? || params[:name] =~ /[\.\#@\/\\]+/
-      render json: {code: "400", message: "タグ名が不適切です"}, status: 400
-      return
-    end
-
-    if params[:parent_id].present? && params[:parent_id] =~ /[^0-9]+/
-      render json: {code: "400", message: "親タグの指定が不適切です"}, status: 400
-      return
-    end
-
     # 親タグ取得
     parent = nil
     if params[:parent_id].present?
