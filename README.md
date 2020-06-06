@@ -49,6 +49,11 @@ docker-compose run api <Rails コマンド>
 docker-compose run api rake db:migrate:reset db:seed
 ```
 
+コード整形(Rubocop)
+```
+docker-compose run api rubocop --auto-correct
+```
+
 ## DB設計
 
 ![DB](docs/db.png)
