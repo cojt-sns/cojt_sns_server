@@ -42,7 +42,7 @@
       "mountPoints": [
         {
           "sourceVolume": "ssl-key",
-          "containerPath": "/etc/letsencrypt/live/stg.cojt-sns.work"
+          "containerPath": "/etc/letsencrypt/live"
         }
       ],
       "workingDirectory": "/opt/app",
