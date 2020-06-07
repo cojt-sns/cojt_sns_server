@@ -114,7 +114,7 @@
   "proxyConfiguration": null,
   "volumes": [
     {
-      "name": "database_scratch",
+      "name": "ssl-key",
       "host": {}
     }
   ]
