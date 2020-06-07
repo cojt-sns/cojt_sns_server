@@ -41,8 +41,8 @@
       "dnsServers": null,
       "mountPoints": [
         {
-          "sourceVolume": "ssl-key",
-          "containerPath": "/etc/letsencrypt/live"
+          "sourceVolume": "letsencrypt",
+          "containerPath": "/etc/letsencrypt"
         }
       ],
       "workingDirectory": "/opt/app",
@@ -114,7 +114,7 @@
   "proxyConfiguration": null,
   "volumes": [
     {
-      "name": "ssl-key",
+      "name": "letsencrypt",
       "dockerVolumeConfiguration": {
         "driverOpts": null,
         "labels": null,
