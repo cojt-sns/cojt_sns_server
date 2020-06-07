@@ -65,10 +65,10 @@
       "extraHosts": null,
       "pseudoTerminal": null,
       "user": null,
-      "readonlyRootFilesystem": true,
+      "readonlyRootFilesystem": null,
       "dockerLabels": null,
       "systemControls": null,
-      "privileged": null,
+      "privileged": true,
       "name": "cojt_sns_server"
     }
   ],
