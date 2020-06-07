@@ -72,7 +72,7 @@ jobs:
         --build-arg MYSQL_HOST="$MYSQL_HOST" \
         --build-arg MYSQL_USERNAME="$MYSQL_USERNAME" \
         --build-arg MYSQL_PASSWORD="$MYSQL_PASSWORD" \
-        -f deploy\Dockerfile.stg . 
+        -f deploy/Dockerfile.stg . 
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
