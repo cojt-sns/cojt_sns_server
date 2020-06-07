@@ -58,6 +58,9 @@ jobs:
         SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
         RAILS_ENV: production
         EMAIL: ${{ secrets.EMAIL }}
+        MYSQL_HOST: ${{ secrets.MYSQL_HOST_STG }}
+        MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME_STG }}
+        MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD_STG }}
       run: |
         # Build a docker container and
         # push it to ECR so that it can
@@ -66,7 +69,10 @@ jobs:
         --build-arg SECRET_KEY_BASE="$SECRET_KEY_BASE" \
         --build-arg RAILS_ENV="$RAILS_ENV" \
         --build-arg EMAIL="$EMAIL" \
-        -f .\deploy\Dockerfile.stg . 
+        --build-arg MYSQL_HOST="$MYSQL_HOST" \
+        --build-arg MYSQL_USERNAME="$MYSQL_USERNAME" \
+        --build-arg MYSQL_PASSWORD="$MYSQL_PASSWORD" \
+        -f deploy\Dockerfile.stg . 
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
