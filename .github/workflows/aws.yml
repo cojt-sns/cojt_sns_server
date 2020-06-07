@@ -80,7 +80,7 @@ jobs:
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: task.stg.json
+        task-definition: deploy/task.stg.json
         container-name: cojt_sns_server
         image: ${{ steps.build-image.outputs.image }}
 
