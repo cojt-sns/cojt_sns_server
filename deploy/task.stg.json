@@ -65,7 +65,7 @@
       "extraHosts": null,
       "pseudoTerminal": null,
       "user": null,
-      "readonlyRootFilesystem": null,
+      "readonlyRootFilesystem": true,
       "dockerLabels": null,
       "systemControls": null,
       "privileged": null,
