@@ -27,9 +27,9 @@ ARG MYSQL_PASSWORD
 
 RUN touch .env
 RUN echo 'RAILS_ENV=${RAILS_ENV}' >> .env
-RUN echo 'RAILS_MASTER_KEY=${RAILS_MASTER_KEY}' >> .env
+RUN echo '${RAILS_MASTER_KEY}' > config/master.key
 RUN echo 'SECRET_KEY_BASE=${SECRET_KEY_BASE}' >> .env
-RUN echo 'EMAIL=${EMAIL}' >> .env
+ENV EMAIL ${EMAIL}
 RUN echo 'MYSQL_HOST=${MYSQL_HOST}' >> .env
 RUN echo 'MYSQL_USERNAME=${MYSQL_USERNAME}' >> .env
 RUN echo 'MYSQL_PASSWORD=${MYSQL_PASSWORD}' >> .env
