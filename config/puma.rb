@@ -39,8 +39,8 @@ plugin :tmp_restart
 
 if ENV.fetch('RAILS_ENV') { 'development' } == 'production'
   ssl_bind '0.0.0.0', '4000', {
-    key: 'privkey.pem',
-    cert: 'fullchain.pem',
+    key: '/opt/app/privkey.pem',
+    cert: '/opt/app/fullchain.pem',
     verify_mode: 'none'
   }
 end
