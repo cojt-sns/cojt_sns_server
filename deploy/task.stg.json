@@ -115,7 +115,13 @@
   "volumes": [
     {
       "name": "ssl-key",
-      "host": {}
+      "dockerVolumeConfiguration": {
+        "driverOpts": null,
+        "labels": null,
+        "driver": "local",
+        "scope": "shared",
+        "autoprovision": false
+      }
     }
   ]
 }
