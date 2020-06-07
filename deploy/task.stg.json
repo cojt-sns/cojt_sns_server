@@ -112,5 +112,10 @@
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
-  "volumes": []
+  "volumes": [
+    {
+      "name": "database_scratch",
+      "host": {}
+    }
+  ]
 }
