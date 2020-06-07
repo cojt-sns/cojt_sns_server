@@ -39,7 +39,12 @@
       "resourceRequirements": null,
       "ulimits": null,
       "dnsServers": null,
-      "mountPoints": [],
+      "mountPoints": [
+        {
+          "sourceVolume": "ssl-key",
+          "containerPath": "/etc/letsencrypt/live/stg.cojt-sns.work"
+        }
+      ],
       "workingDirectory": "/opt/app",
       "secrets": null,
       "dockerSecurityOptions": null,
