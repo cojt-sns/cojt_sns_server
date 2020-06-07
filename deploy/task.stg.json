@@ -48,7 +48,7 @@
       "workingDirectory": "/opt/app",
       "secrets": null,
       "dockerSecurityOptions": null,
-      "memory": 512,
+      "memory": 400,
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
