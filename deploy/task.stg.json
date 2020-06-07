@@ -120,7 +120,7 @@
         "labels": null,
         "driver": "local",
         "scope": "shared",
-        "autoprovision": false
+        "autoprovision": true
       }
     }
   ]
