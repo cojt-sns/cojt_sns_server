@@ -83,8 +83,9 @@ jobs:
       env:
         CLUSTER: cojt-sns-stg
       run: |
-        TASK="$(aws ecs list-tasks --cluster $CLUSTER --output text | sed -e 's/.*task\/\(.*\)/\1/g')"
-        aws ecs stop-task --task $TASK
+        export TASK="$(aws ecs list-tasks --cluster $CLUSTER --output text | sed -e 's/.*task\/\(.*\)/\1/g')"
+        echo $TASK
+        aws ecs stop-task --task $TASK --cluster $CLUSTER
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
