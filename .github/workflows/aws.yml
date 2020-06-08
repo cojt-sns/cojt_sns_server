@@ -48,6 +48,13 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
+    
+    - uses: whoan/docker-build-with-cache-action@v5
+      with:
+        username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        registry: ${{ steps.login-ecr.outputs.registry }}
+        image_name: cojt_sns_server_api
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
@@ -78,6 +85,7 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
     
+    - uses: chrislennon/action-aws-cli@v1.1
     - name: Stop Old Task
       continue-on-error: true
       run: |
