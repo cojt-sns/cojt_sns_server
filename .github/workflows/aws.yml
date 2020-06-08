@@ -80,10 +80,9 @@ jobs:
     
     - name: Stop Old Task
       continue-on-error: true
-      env:
-        CLUSTER: cojt-sns-stg
       run: |
-        TASK="$(aws ecs list-tasks --output text | sed -e 's/\s/ /g' | cut -d ' ' -f2 | tr '\n' ' ')"
+        CLUSTER="$(aws ecs list-clusters --output text | sed -e 's/\s/ /g' | cut -d ' ' -f2)"
+        TASK="$(aws ecs list-tasks --cluster $CLUSTER --output text | sed -e 's/\s/ /g' | cut -d ' ' -f2 | tr '\n' ' ')"
         aws ecs stop-task --task $(echo $TASK)
 
     - name: Fill in the new image ID in the Amazon ECS task definition
