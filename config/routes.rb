@@ -5,4 +5,6 @@ Rails.application.routes.draw do
   post 'auth/logout'
 
   resources :tags, only: [:index, :show, :create]
+
+  resources :users, only: [:create, :show, :update, :destroy]
 end

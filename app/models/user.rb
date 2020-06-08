@@ -8,4 +8,19 @@ class User < ApplicationRecord
 
   has_many :posts, dependent: :destroy
   has_many :authenticate_tokens, dependent: :nullify
+
+  validate :email, -> {
+    unless self.email =~ /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+      self.errors.add(:email, self.email)
+    end
+  }
+
+  def json
+    {
+      "id": id,
+      "name": name,
+      "bio": bio,
+      "image": image
+    }
+  end
 end
