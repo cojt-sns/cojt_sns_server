@@ -45,7 +45,7 @@ class AuthController < ApplicationController
   # POST /auth/logout
   def logout()
     #tokenが送信されたか確認
-    if params[:autn_token].nil?
+    if params[:auth_token].nil?
       render json: { "code": 400, "message": "ログイン情報がないため、ログアウトできません"}, status: 400
       return
     end

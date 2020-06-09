@@ -231,7 +231,7 @@ paths:
   /groups:
     get:
       tags:
-      - "Group"
+        - "Group"
       summary: "グループを検索する"
       operationId: "searchGroup"
       parameters:
@@ -247,16 +247,16 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: '#/components/schemas/GroupSearchResult'
+                $ref: "#/components/schemas/GroupSearchResult"
         "402":
           description: "認証不正"
         "500":
           description: "Internal Server Error"
     post:
       tags:
-      - "Group"
+        - "Group"
       security:
-      - Bearer: []
+        - Bearer: []
       summary: "グループを作る"
       operationId: "postGroup"
       requestBody:
@@ -264,14 +264,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Group'
+              $ref: "#/components/schemas/Group"
       responses:
         "200":
           description: "successful operation"
           content:
             "application/json":
               schema:
-                $ref: '#/components/schemas/Group'
+                $ref: "#/components/schemas/Group"
         "400":
           description: "不正なリクエストです。"
         "402":
@@ -281,7 +281,7 @@ paths:
   /groups/{id}:
     get:
       tags:
-      - "Group"
+        - "Group"
       summary: "IDからGroupを取得する"
       operationId: "getGroup"
       parameters:
@@ -306,7 +306,7 @@ paths:
           description: "Internal Server Error"
     put:
       tags:
-      - "Group"
+        - "Group"
       security:
         - Bearer: []
       summary: "Updated Group"
@@ -328,11 +328,11 @@ paths:
               $ref: "#/components/schemas/Group"
       responses:
         "200":
-            description: "successful operation"
-            content:
-              "application/json":
-                schema:
-                  $ref: '#/components/schemas/Group'
+          description: "successful operation"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Group"
         "400":
           description: "Invalid user supplied"
         "402":
@@ -460,7 +460,7 @@ components:
       type: array
       description: "タグの検索結果"
       items:
-        $ref: '#/components/schemas/TagSearchResultCandidate'
+        $ref: "#/components/schemas/TagSearchResultCandidate"
     Group:
       type: "object"
       required:
@@ -480,7 +480,7 @@ components:
           type: "array"
           items:
             type: string
-            example: "スマブラのプレイ時間は?" 
+            example: "スマブラのプレイ時間は?"
           description: "参加者のプロフィールの質問事項"
         introduction:
           type: "boolean"
@@ -491,15 +491,15 @@ components:
           items:
             type: integer
           description: "タグidの配列"
-          
+
     GroupSearchResult:
       type: array
       description: "グループの検索結果"
       items:
-        $ref: '#/components/schemas/GroupSearchResultCandidate'
+        $ref: "#/components/schemas/GroupSearchResultCandidate"
     GroupSearchResultCandidate:
       type: object
       description: "グループの検索結果1件"
       properties:
         group:
-          $ref: '#/components/schemas/Group'
+          $ref: "#/components/schemas/Group"
