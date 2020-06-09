@@ -3,8 +3,8 @@ class UsersController < ApplicationController
 
   # /users
   def create
-    user = User.new
-    user = set_user_params(user)
+    user = create_user()
+    # user = set_user_params(user)
     
     unless user.valid?
       render json: { "code": 400, "message": user.errors.messages }, status: :bad_request
@@ -36,18 +36,19 @@ class UsersController < ApplicationController
 
   private
 
-  def set_user_params(user)
-    user.name = user_params['name']
-    user.bio = user_params['bio']
-    user.image = user_params['image']
-    user.email = user_params['email']
-    user.password_digest = user_params['password']
-    user.oauth_token = user_params['oauth_token']
-    user.oauth_token_secret = user_params['oauth_token_secret']
-    return user
+  def create_user
+    @user = User.new(
+      name: user_params['name'],
+      bio: user_params['bio'],
+      image: params['image'],
+      email: user_params['email'],
+      password_digest: user_params['password'],
+      oauth_token: user_params['oauth_token'],
+      oauth_token_secret: user_params['oauth_token_secret']
+    )
   end
 
   def user_params
-    params.permit(:id, :name, :bio, :image, :email, :password, :oauth_token, :oauth_token_secret)
+    params.permit(:id, :name, :bio, :email, :password, :oauth_token, :oauth_token_secret)
   end
 end

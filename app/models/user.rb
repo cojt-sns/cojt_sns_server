@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   has_secure_password
+  has_one_attached :image
 
   # rubocop:disable Rails/HasAndBelongsToMany
   has_and_belongs_to_many :groups
@@ -20,7 +21,7 @@ class User < ApplicationRecord
       "id": id,
       "name": name,
       "bio": bio,
-      "image": image
+      "image": Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true),
     }
   end
 end
