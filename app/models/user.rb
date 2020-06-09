@@ -12,7 +12,7 @@ class User < ApplicationRecord
 
   validate :email, -> {
     unless self.email =~ /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-      self.errors.add(:email, self.email)
+      self.errors.add(:email, "メールアドレスが適切でありません")
     end
   }
 
