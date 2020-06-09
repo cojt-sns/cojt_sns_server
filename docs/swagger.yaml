@@ -415,7 +415,7 @@ components:
           type: "string"
           description: "プロフィール画像"
           format: binary
-          example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAE1JREFUOI1jYBgFWEF6aur/9NTU/7j4yICJUssoNgAO8DkTnzqKXcCIzyZk/szZs7GqxSqIyyvYDKG+FwgFJLor8Lpg5uzZjLj8PngAAIkFIS4IIkrMAAAAAElFTkSuQmCC"
+          example: "data:application/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAE1JREFUOI1jYBgFWEF6aur/9NTU/7j4yICJUssoNgAO8DkTnzqKXcCIzyZk/szZs7GqxSqIyyvYDKG+FwgFJLor8Lpg5uzZjLj8PngAAIkFIS4IIkrMAAAAAElFTkSuQmCC"
         password:
           type: "string"
           description: "パスワード"
