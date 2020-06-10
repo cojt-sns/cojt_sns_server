@@ -43,6 +43,12 @@ class UsersController < ApplicationController
       return
     end
 
+    # ログインユーザのみに権限を与える
+    if @user != user
+      render json: { "code": 403, "message": 'ユーザを更新する権限がありません。' }, status: :forbidden
+      return
+    end
+
     user.attributes = user_params
 
     unless user.valid?
@@ -61,8 +67,15 @@ class UsersController < ApplicationController
   # /users/:id
   def destroy
     user = User.find_by(id: params[:id])
+
     if user.blank?
       render json: { "code": 404, "message": 'ユーザが見つかりません。' }, status: :not_found
+      return
+    end
+
+    # ログインユーザのみに権限を与える
+    if @user != user
+      render json: { "code": 403, "message": 'ユーザを削除する権限がありません。' }, status: :forbidden
       return
     end
 
