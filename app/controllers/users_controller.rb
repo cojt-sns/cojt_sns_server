@@ -15,7 +15,7 @@ class UsersController < ApplicationController
       return
     end
 
-    params[:tags].map do |tag_id|
+    params[:tags]&.map do |tag_id|
       user.tags << Tag.find(tag_id)
     end
 
@@ -24,7 +24,7 @@ class UsersController < ApplicationController
 
   # /users/:id
   def show
-    user = User.find(params[:id])
+    user = User.find_by(id: params[:id])
 
     if user.blank?
       render json: { "code": 404, "message": 'ユーザが見つかりません。' }, status: :not_found
@@ -36,7 +36,7 @@ class UsersController < ApplicationController
 
   # /users/:id
   def update
-    user = User.find(params[:id])
+    user = User.find_by(id: params[:id])
 
     if user.blank?
       render json: { "code": 404, "message": 'ユーザが見つかりません。' }, status: :not_found
@@ -60,7 +60,7 @@ class UsersController < ApplicationController
 
   # /users/:id
   def destroy
-    user = User.find(params[:id])
+    user = User.find_by(id: params[:id])
     if user.blank?
       render json: { "code": 404, "message": 'ユーザが見つかりません。' }, status: :not_found
       return

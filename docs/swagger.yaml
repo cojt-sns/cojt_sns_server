@@ -73,7 +73,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: "#/components/schemas/UserCreateBody"
       responses:
@@ -127,7 +127,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: "#/components/schemas/UserCreateBody"
       responses:
@@ -760,10 +760,14 @@ components:
     UserCreateBody:
       type: object
       description: "Twitterのユーザープロフィール情報"
+      required:
+        - name
+        - email
+        - password
       properties:
-        id:
-          type: "integer"
-          example: "1"
+        # id:
+        #   type: "integer"
+        #   example: "1"
         name:
           type: "string"
           description: "Twitterのユーザー名"

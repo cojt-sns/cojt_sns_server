@@ -13,6 +13,7 @@ class User < ApplicationRecord
   DEFAULT_IMAGE_PATH = '/neko.png'.freeze
 
   validates :name, presence: true
+  validates :email, uniqueness: true
 
   validate :email, -> {
     unless email =~ %r{^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$}
