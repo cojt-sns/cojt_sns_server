@@ -8,6 +8,8 @@ info:
 tags:
   - name: "User"
     description: "Operations about user"
+  - name: "Auth"
+    description: "Operations about login/logout"
   - name: "Tag"
     description: "タグについての操作"
   - name: "Group"
@@ -15,6 +17,53 @@ tags:
   - name: "Post"
     description: "ポストについての操作"
 paths:
+  /auth/login:
+    post:
+      tags:
+        - "Auth"
+      summary: "ログイン"
+      operationId: "authLogin"
+      security:
+        - Bearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Token"
+        "400":
+          description: "ログイン情報不足"
+        "401":
+          description: "ログイン情報が間違い"
+        "500":
+          description: "Internal Server Error"
+
+  /auth/logout:
+    post:
+      tags:
+        - "Auth"
+      summary: "ログアウト"
+      operationId: "authLogout"
+      security:
+        - Bearer: []
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                type: "string"
+        "403":
+          description: "認証不正"
+        "500":
+          description: "Internal Server Error"
   /users:
     post:
       tags:
@@ -188,6 +237,8 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/TagSearchResult"
+        "400":
+          description: "リクエスト不正"
         "500":
           description: "Internal Server Error"
     post:
@@ -210,6 +261,8 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/Tag"
+        "400":
+          description: "リクエスト不正"
         "402":
           description: "認証不正"
         "500":
@@ -659,6 +712,13 @@ components:
       scheme: bearer
       description: Credentials or access token for API
   schemas:
+    Login:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+        password:
+          type: "string"
     User:
       type: "object"
       properties:
@@ -760,7 +820,7 @@ components:
           description: "tagの先祖idたち(親から)"
           items:
             $ref: "#/components/schemas/Tag"
-        children:
+        descendants:
           type: array
           description: "tagの子孫idたち(子から)"
           items:
