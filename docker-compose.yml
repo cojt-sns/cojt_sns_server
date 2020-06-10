@@ -11,7 +11,7 @@ services:
       - mysql-data:/var/lib/mysql
   api:
     build: .
-    command: rails server -b 0.0.0.0 -p 4000
+    command: bundle exec rails server -b 0.0.0.0 -p 4000
     volumes:
       - .:/opt/app
       - app-bundle:/usr/local/bundle
