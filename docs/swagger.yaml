@@ -10,6 +10,10 @@ tags:
     description: "Operations about user"
   - name: "Tag"
     description: "タグについての操作"
+  - name: "Group"
+    description: "グループについての操作"
+  - name: "Post"
+    description: "ポストについての操作"
 paths:
   /users:
     post:
@@ -65,6 +69,12 @@ paths:
         - Bearer: []
       summary: "ユーザー情報の更新"
       operationId: "updateUser"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
       requestBody:
         required: true
         content:
@@ -132,7 +142,7 @@ paths:
       security:
         - Bearer: []
       summary: "特定のユーザーのTwitterプロフィールを取得する"
-      operationId: "getUserTags"
+      operationId: "getUserTwitterProfile"
       parameters:
         - name: "id"
           in: "path"
@@ -167,7 +177,7 @@ paths:
             type: "string"
         - name: "descendants"
           in: "query"
-          description: "返却する子孫の世代数(0以上)"
+          description: "返却する子孫の世代数"
           schema:
             type: "integer"
             default: 0
@@ -177,9 +187,7 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: '#/components/schemas/TagSearchResult'
-        "400":
-          description: "リクエスト不正"
+                $ref: "#/components/schemas/TagSearchResult"
         "500":
           description: "Internal Server Error"
     post:
@@ -201,9 +209,7 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: '#/components/schemas/Tag'
-        "400":
-          description: "リクエスト不正"
+                $ref: "#/components/schemas/Tag"
         "402":
           description: "認証不正"
         "500":
@@ -235,7 +241,7 @@ paths:
   /groups:
     get:
       tags:
-      - "Group"
+        - "Group"
       summary: "グループを検索する"
       operationId: "searchGroup"
       parameters:
@@ -251,16 +257,16 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: '#/components/schemas/GroupSearchResult'
+                $ref: "#/components/schemas/GroupSearchResult"
         "402":
           description: "認証不正"
         "500":
           description: "Internal Server Error"
     post:
       tags:
-      - "Group"
+        - "Group"
       security:
-      - Bearer: []
+        - Bearer: []
       summary: "グループを作る"
       operationId: "postGroup"
       requestBody:
@@ -268,14 +274,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Group'
+              $ref: "#/components/schemas/Group"
       responses:
         "200":
           description: "successful operation"
           content:
             "application/json":
               schema:
-                $ref: '#/components/schemas/Group'
+                $ref: "#/components/schemas/Group"
         "400":
           description: "不正なリクエストです。"
         "402":
@@ -285,7 +291,7 @@ paths:
   /groups/{id}:
     get:
       tags:
-      - "Group"
+        - "Group"
       summary: "IDからGroupを取得する"
       operationId: "getGroup"
       parameters:
@@ -310,7 +316,7 @@ paths:
           description: "Internal Server Error"
     put:
       tags:
-      - "Group"
+        - "Group"
       security:
         - Bearer: []
       summary: "Updated Group"
@@ -332,11 +338,11 @@ paths:
               $ref: "#/components/schemas/Group"
       responses:
         "200":
-            description: "successful operation"
-            content:
-              "application/json":
-                schema:
-                  $ref: '#/components/schemas/Group'
+          description: "successful operation"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Group"
         "400":
           description: "Invalid user supplied"
         "402":
@@ -345,6 +351,305 @@ paths:
           description: "不正なアクセスです。"
         "404":
           description: "そのIDのグループが存在しない"
+        "500":
+          description: "Internal Server Error"
+  /posts:
+    get:
+      tags:
+        - "Post"
+      summary: "グループを検索する"
+      operationId: "searchPost"
+      parameters:
+        - name: "tagId"
+          in: "query"
+          description: "検索 tagId 指定しない場合は全件検索 privateのグループは見れないようにする"
+          required: false
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation "
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/GroupSearchResult"
+        "402":
+          description: "認証不正"
+        "500":
+          description: "Internal Server Error"
+  /groups/{group_id}/public/posts:
+    get:
+      tags:
+        - "Post"
+        - "Group"
+      summary: "パブリックグループ内のをポストを取得する"
+      operationId: "getPublicGroupPosts"
+      parameters:
+        - name: "group_id"
+          in: "path"
+          description: "GroupのID"
+          required: true
+          schema:
+            type: "integer"
+        - name: "content"
+          in: "query"
+          description: "content"
+          schema:
+            type: "string"
+        - name: "from"
+          in: "query"
+          description: "投稿先ユーザー"
+          schema:
+            type: "integer"
+        - name: "since"
+          in: "query"
+          description: "開始日"
+          schema:
+            type: "string"
+        - name: "until"
+          in: "query"
+          description: "終了日"
+          schema:
+            type: "string"
+        - name: "since_timestamp"
+          in: "query"
+          description: "開始タイムスタンプ"
+          schema:
+            type: "string"
+        - name: "until_timestamp"
+          in: "query"
+          description: "終了タイムスタンプ"
+          schema:
+            type: "string"
+        - name: "max"
+          in: "query"
+          description: "投稿の最大件数"
+          schema:
+            type: "integer"
+            default: 100
+      responses:
+        "200":
+          description: "successful operation "
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/PostSearchResult"
+        "400":
+          description: "リクエスト不正"
+        "402":
+          description: "認証不正"
+        "403":
+          description: "パブリックグループではありません。"
+        "404":
+          description: "グループが存在しません。"
+        "500":
+          description: "Internal Server Error"
+  /groups/{group_id}/posts:
+    get:
+      tags:
+        - "Post"
+        - "Group"
+      summary: "グループ内のをポストを検索する"
+      operationId: "getGroupPosts"
+      security:
+        - Bearer: []
+      parameters:
+        - name: "group_id"
+          in: "path"
+          description: "GroupのID"
+          required: true
+          schema:
+            type: "integer"
+        - name: "content"
+          in: "query"
+          description: "content"
+          schema:
+            type: "string"
+        - name: "from"
+          in: "query"
+          description: "投稿先ユーザー"
+          schema:
+            type: "integer"
+        - name: "since"
+          in: "query"
+          description: "開始日"
+          schema:
+            type: "string"
+        - name: "until"
+          in: "query"
+          description: "終了日"
+          schema:
+            type: "string"
+        - name: "since_timestamp"
+          in: "query"
+          description: "開始タイムスタンプ"
+          schema:
+            type: "string"
+        - name: "until_timestamp"
+          in: "query"
+          description: "終了タイムスタンプ"
+          schema:
+            type: "string"
+        - name: "max"
+          in: "query"
+          description: "投稿の最大件数"
+          schema:
+            type: "integer"
+            default: 100
+      responses:
+        "200":
+          description: "successful operation "
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/PostSearchResult"
+        "400":
+          description: "リクエスト不正"
+        "402":
+          description: "認証不正"
+        "403":
+          description: "グループへの権限がありません。"
+        "404":
+          description: "グループが存在しません。"
+        "500":
+          description: "Internal Server Error"
+    post:
+      tags:
+        - "Post"
+        - "Group"
+      security:
+        - Bearer: []
+      summary: "ポストを投稿する"
+      operationId: "postPost"
+      parameters:
+        - name: "group_id"
+          in: "path"
+          description: "GroupのID"
+          required: true
+          schema:
+            type: "integer"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Post"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Post"
+        "400":
+          description: "グループが存在しない。contentがない。"
+        "402":
+          description: "認証不正"
+        "403":
+          description: "グループに投稿する権限がない"
+        "500":
+          description: "Internal Server Error"
+  /posts/{id}:
+    get:
+      tags:
+        - "Post"
+      summary: "IDからPostを取得する"
+      operationId: "getPost"
+      security:
+        - Bearer: []
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "GroupのID"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "402":
+          description: "認証不正"
+        "403":
+          description: "不正なアクセスです。"
+        "404":
+          description: "そのIDのポストが存在しない"
+        "500":
+          description: "Internal Server Error"
+    put:
+      tags:
+        - "Post"
+      security:
+        - Bearer: []
+      summary: "Updated Post"
+      description: "ポストを更新する"
+      operationId: "updatePost"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "PostのID"
+          required: true
+          schema:
+            type: "integer"
+      requestBody:
+        description: "Updated Post object"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: こんばんは
+                  description: 投稿内容
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Post"
+        "400":
+          description: "リクエスト不正"
+        "402":
+          description: "認証不正"
+        "403":
+          description: "不正なアクセスです。"
+        "404":
+          description: "そのIDのポストが存在しない"
+        "500":
+          description: "Internal Server Error"
+    delete:
+      tags:
+        - "Post"
+      security:
+        - Bearer: []
+      summary: "ユーザーの削除"
+      operationId: "deletePost"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ユーザーID"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Post"
+        "402":
+          description: "認証不正"
+        "403":
+          description: "ユーザに権限が存在しない"
+        "404":
+          description: "ポストが存在しない"
         "500":
           description: "Internal Server Error"
 components:
@@ -454,8 +759,8 @@ components:
           type: array
           description: "tagの先祖idたち(親から)"
           items:
-            $ref: '#/components/schemas/Tag'
-        descendants:
+            $ref: "#/components/schemas/Tag"
+        children:
           type: array
           description: "tagの子孫idたち(子から)"
           items:
@@ -464,7 +769,7 @@ components:
       type: array
       description: "タグの検索結果"
       items:
-        $ref: '#/components/schemas/TagSearchResultCandidate'
+        $ref: "#/components/schemas/TagSearchResultCandidate"
     Group:
       type: "object"
       required:
@@ -484,7 +789,7 @@ components:
           type: "array"
           items:
             type: string
-            example: "スマブラのプレイ時間は?" 
+            example: "スマブラのプレイ時間は?"
           description: "参加者のプロフィールの質問事項"
         introduction:
           type: "boolean"
@@ -495,15 +800,48 @@ components:
           items:
             type: integer
           description: "タグidの配列"
-          
     GroupSearchResult:
       type: array
       description: "グループの検索結果"
       items:
-        $ref: '#/components/schemas/GroupSearchResultCandidate'
+        $ref: "#/components/schemas/GroupSearchResultCandidate"
     GroupSearchResultCandidate:
       type: object
       description: "グループの検索結果1件"
       properties:
         group:
-          $ref: '#/components/schemas/Group'
+          $ref: "#/components/schemas/Group"
+    Post:
+      type: "object"
+      required:
+        - id
+        - group_id
+        - content
+      properties:
+        id:
+          type: "integer"
+          example: 1
+          readOnly: true
+        content:
+          type: "string"
+          description: "内容"
+          example: "こんにちは！"
+        user_id:
+          type: "integer"
+          example: 1
+          description: "ユーザーのID"
+          readOnly: true
+        group_id:
+          type: "integer"
+          description: "グループのID"
+          example: 1
+        created_at:
+          type: "string"
+          description: "作成日時"
+          example: "2020-06-09T09:20:52.220Z"
+
+    PostSearchResult:
+      type: array
+      description: "グループの検索結果"
+      items:
+        $ref: "#/components/schemas/Post"
