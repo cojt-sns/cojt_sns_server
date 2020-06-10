@@ -49,6 +49,7 @@ test:
 #
 production:
   <<: *default
+  host: <%= ENV.fetch("MYSQL_HOST", "db") %>
   database: cojt_sns_server_production
-  username: cojt_sns_server
-  password: <%= ENV['COJT_SNS_SERVER_DATABASE_PASSWORD'] %>
+  username: <%= ENV.fetch("MYSQL_USERNAME", "username") %>
+  password: <%= ENV.fetch("MYSQL_PASSWORD", "password") %>
