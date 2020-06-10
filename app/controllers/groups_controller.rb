@@ -4,8 +4,8 @@ class GroupsController < ApplicationController
   # get /groups
   def index
     if params[:tag_ids].nil?
-      groupSearchResult=Group.find_by(public: true)
-      render json:groupSearchResult
+      groups = Group.where(public: true)
+      render json: groups.map{|g| g.json}
       return 
     end
 
@@ -22,48 +22,43 @@ class GroupsController < ApplicationController
 
   # post /groups
   def create
-
     #必須項目が入力されたか確認 
-    if params[:questions].nil?
+    if params[:questions].nil? || !params[:questions].is_a?(Array)
       render json: { "code": 400, "message": "質問事項を入力してください。"}, status: 400
       return 
     end
+
     if params[:tags].nil?
       render json: { "code": 400, "message": "タグを入力してください。"}, status: 400
       return 
     end
 
-    questions=params[:questions]
-    question_text=""
-    questions.each do |question|
+    params[:questions].each do |question|
       if question.include?("$")
         render json: { "code": 400, "message": "質問事項に「$」を含めないでください。"}, status: 400
         return 
       end
-      question_text = question_text+"$"+question
-    end
-    question_text=question_text[1,question_text.length]
-
-    tags=[]
-    params[:tags].each do |tag1|
-      tags.push(Tag.find(tag1))
     end
 
-    group=Group.new(public:true,twitter_traceability: false,questions:question_text,introduction:false,tags:tags)
+    group = Group.new
+    
+    params[:tags].each do |tag_id|
+      tag = Tag.find_by(id: tag_id)
+      if tag.nil?
+        render json: { "code": 400, "message": "タグが存在しません" }, status: 400
+        return
+      end
+      group.tags << tag
+    end
 
-    #必須でない項目の入力があれば、代入  
-    if params[:twitter_traceability]
-      group.twitter_traceability=params[:twitter_traceability]
-    end
-    if params[:introduction]
-      group.introduction=params[:introduction]
-    end
-    if params[:public]
-      group.public=params[:public]
-    end
+    group.questions = params[:questions].join('$')
+      
+    group.twitter_traceability = params[:twitter_traceability] if params[:twitter_traceability]
+    group.introduction = params[:introduction] if params[:introduction]
+    group.public = params[:public]if params[:public]
 
     if !group.valid?
-      render json: { "code": 400, "message":group.errors.messages }, status: 400
+      render json: { "code": 400, "message": group.errors.messages }, status: 400
       return
     end
     
@@ -73,7 +68,7 @@ class GroupsController < ApplicationController
       return
     end
 
-    render json:{"id":group.id,"public":group.public,"twitter_traceability": group.twitter_traceability,"questions":group.questions,"introduction":group.introduction,"tags":group.tags.pluck("id")}
+    render json: group.json
   end
 
   # get /groups/{id}
@@ -84,17 +79,28 @@ class GroupsController < ApplicationController
       render json: { "code": 404, "message": "該当するグループが存在しません。"}, status: 404
       return 
     end
-    if !group.public?
+
+    if !group.public
       render json: { "code": 403, "message": "privateグループのため、見れません"}, status: 403
       return 
     end
     
-    render json:{"id":group.id,"public":group.public,"twitter_traceability": group.twitter_traceability,"questions":group.questions,"introduction":group.introduction,"tags":group.tags.pluck("id")}
-  
+    render json: group.json
   end
 
   # put /groups/{id}
   def update
+    if !params[:questions].is_a?(Array)
+      render json: { "code": 400, "message": "質問事項は配列で入力してください。"}, status: 400
+      return 
+    end
+
+    params[:questions]&.each do |question|
+      if question.include?("$")
+        render json: { "code": 400, "message": "質問事項に「$」を含めないでください。"}, status: 400
+        return 
+      end
+    end
 
     group = Group.find_by(id: params[:id])
 
@@ -104,22 +110,28 @@ class GroupsController < ApplicationController
       return 
     end
 
-    #グループメンバーか否か?
+    # TODO:グループメンバーか否か
 
     if params[:tags]
-      group.tags=params[:tags]
+      group.tag = [] 
+      params[:tags].each do |tag_id|
+        tag = Tag.find_by(id: tag_id)
+        if tag.nil?
+          render json: { "code": 400, "message": "タグが存在しません" }, status: 400
+          return
+        end
+        group.tags << tag
+      end
     end
-    if params[:questions]
-      group.questions=params[:questions]
-    end
-    if params[:twitter_traceability]
-      group.twitter_traceability=params[:twitter_traceability]
-    end
-    if params[:introduction]
-      group.introduction=params[:introduction]
-    end
-    if params[:public]
-      group.public=params[:public]
+
+    group.questions = params[:questions].join('$') if params[:questions]
+    group.twitter_traceability = params[:twitter_traceability] if params[:twitter_traceability]
+    group.introduction = params[:introduction] if params[:introduction]
+    group.public = params[:public] if params[:public]
+
+    if !group.valid?
+      render json: { "code": 400, "message": group.errors.messages }, status: 400
+      return
     end
 
     if !group.save
@@ -127,6 +139,6 @@ class GroupsController < ApplicationController
       return
     end
 
-    render json:{"id":group.id,"public":group.public,"twitter_traceability": group.twitter_traceability,"questions":group.questions,"introduction":group.introduction,"tags":group.tags.pluck("id")}
+    render json: group.json
   end
 end

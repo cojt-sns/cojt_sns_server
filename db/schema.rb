@@ -21,10 +21,10 @@ ActiveRecord::Schema.define(version: 2020_06_02_115350) do
   end
 
   create_table "groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.boolean "public"
-    t.boolean "twitter_traceability"
+    t.boolean "public", default: true, null: false
+    t.boolean "twitter_traceability", default: false, null: false
     t.text "questions"
-    t.boolean "introduction"
+    t.boolean "introduction", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
