@@ -10,11 +10,13 @@ class User < ApplicationRecord
   has_many :posts, dependent: :destroy
   has_many :authenticate_tokens, dependent: :nullify
 
-  DEFAULT_IMAGE_PATH = "/neko.png"
+  DEFAULT_IMAGE_PATH = '/neko.png'.freeze
+
+  validates :name, presence: true
 
   validate :email, -> {
-    unless self.email =~ /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-      self.errors.add(:email, "メールアドレスが適切でありません")
+    unless email =~ %r{^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$}
+      errors.add(:email, 'メールアドレスが適切でありません')
     end
   }
 
@@ -22,16 +24,16 @@ class User < ApplicationRecord
     {
       "id": id,
       "name": name,
-      "bio": bio,
-      "image": get_image_url,
+      "bio": bio.presence || '',
+      "image": get_image_url
     }
   end
 
   def get_image_url
-    if image.present?
-      image_url = Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)
-    else
-      image_url = DEFAULT_IMAGE_PATH
-    end
+    image_url = if image.present?
+                  Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)
+                else
+                  DEFAULT_IMAGE_PATH
+                end
   end
 end

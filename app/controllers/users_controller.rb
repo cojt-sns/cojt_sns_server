@@ -9,9 +9,9 @@ class UsersController < ApplicationController
       render json: { "code": 400, "message": user.errors.messages }, status: :bad_request
       return
     end
-    
+
     unless user.save
-      render json: { "code": 500, "message": "ユーザーの作成に失敗しました"}, status: 500
+      render json: { "code": 500, "message": 'ユーザーの作成に失敗しました' }, status: :internal_server_error
       return
     end
 
@@ -25,9 +25,9 @@ class UsersController < ApplicationController
   # /users/:id
   def show
     user = User.find(params[:id])
-    
+
     if user.blank?
-      render json: { "code": 404, "message": "ユーザが見つかりません。"}, status: 404
+      render json: { "code": 404, "message": 'ユーザが見つかりません。' }, status: :not_found
       return
     end
 
@@ -37,9 +37,9 @@ class UsersController < ApplicationController
   # /users/:id
   def update
     user = User.find(params[:id])
-    
+
     if user.blank?
-      render json: { "code": 404, "message": "ユーザが見つかりません。"}, status: 404
+      render json: { "code": 404, "message": 'ユーザが見つかりません。' }, status: :not_found
       return
     end
 
@@ -51,7 +51,7 @@ class UsersController < ApplicationController
     end
 
     unless user.save
-      render json: { "code": 500, "message": "ユーザーの更新に失敗しました"}, status: 500
+      render json: { "code": 500, "message": 'ユーザーの更新に失敗しました' }, status: :internal_server_error
       return
     end
 
@@ -60,26 +60,25 @@ class UsersController < ApplicationController
 
   # /users/:id
   def destroy
-    user = User.find(params[:id])    
+    user = User.find(params[:id])
     if user.blank?
-      render json: { "code": 404, "message": "ユーザが見つかりません。"}, status: 404
+      render json: { "code": 404, "message": 'ユーザが見つかりません。' }, status: :not_found
       return
     end
 
     unless user.destroy
-      render json: { "code": 500, "message": "ユーザーの削除に失敗しました"}, status: 500
+      render json: { "code": 500, "message": 'ユーザーの削除に失敗しました' }, status: :internal_server_error
       return
     end
 
-    render json: { "code": 200, "message": "削除しました"}, status: 200
+    render json: { "code": 200, "message": '削除しました' }, status: :ok
   end
 
   # /users/:id/tags
   def tags
     user = User.find([params[:id]]).first
     res = []
-    res = user.tags.map{|tag|
-      tag.json } if user.tags.present?
+    res = user.tags.map(&:json) if user.tags.present?
     render json: res
   end
 
