@@ -26,15 +26,15 @@ class User < ApplicationRecord
       "id": id,
       "name": name,
       "bio": bio.presence || '',
-      "image": get_image_url
+      "image": image_url
     }
   end
 
-  def get_image_url
-    image_url = if image.present?
-                  Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)
-                else
-                  DEFAULT_IMAGE_PATH
-                end
+  def image_url
+    if image.present?
+      Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)
+    else
+      DEFAULT_IMAGE_PATH
+    end
   end
 end

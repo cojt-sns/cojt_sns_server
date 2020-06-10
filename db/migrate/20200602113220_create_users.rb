@@ -10,6 +10,7 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.string :oauth_token_secret
 
       t.timestamps
+      t.index [:email], unique: true
     end
   end
 end

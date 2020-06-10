@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authenticate, only: %i(update delete twitterr_profile)
+  before_action :authenticate, only: %i(update destroy twitter_profile)
 
   # /users
   def create
