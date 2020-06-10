@@ -6,5 +6,8 @@ Rails.application.routes.draw do
 
   resources :tags, only: [:index, :show, :create]
 
-  resources :users, only: [:create, :show, :update, :destroy]
+  resources :users, only: [:create, :show, :update, :destroy] do
+    get 'tags', to: 'users#tags', on: :member
+    get 'twitter_profile', to: 'users#twitter_profile', on: :member
+  end
 end

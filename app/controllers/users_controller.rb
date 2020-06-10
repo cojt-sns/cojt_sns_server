@@ -3,16 +3,20 @@ class UsersController < ApplicationController
 
   # /users
   def create
-    user = create_user()
-    
+    user = User.new(user_params)
+
     unless user.valid?
       render json: { "code": 400, "message": user.errors.messages }, status: :bad_request
       return
     end
-
+    
     unless user.save
       render json: { "code": 500, "message": "ユーザーの作成に失敗しました"}, status: 500
       return
+    end
+
+    params[:tags].map do |tag_id|
+      user.tags << Tag.find(tag_id)
     end
 
     render json: user.json
@@ -72,7 +76,11 @@ class UsersController < ApplicationController
 
   # /users/:id/tags
   def tags
-
+    user = User.find([params[:id]]).first
+    res = []
+    res = user.tags.map{|tag|
+      tag.json } if user.tags.present?
+    render json: res
   end
 
   # /users/:id/twitter_profile
@@ -80,19 +88,7 @@ class UsersController < ApplicationController
 
   private
 
-  def create_user
-    @user = User.new(
-      name: user_params['name'],
-      bio: user_params['bio'],
-      image: user_params['image'],
-      email: user_params['email'],
-      password_digest: user_params['password'],
-      oauth_token: user_params['oauth_token'],
-      oauth_token_secret: user_params['oauth_token_secret']
-    )
-  end
-
   def user_params
-    params.permit(:id, :name, :bio, :image, :email, :password, :oauth_token, :oauth_token_secret)
+    params.permit(:name, :bio, :image, :email, :password, :oauth_token, :oauth_token_secret)
   end
 end
