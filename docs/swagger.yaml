@@ -19,6 +19,8 @@ paths:
         - "Auth"
       summary: "ログイン"
       operationId: "authLogin"
+      security:
+        - Bearer: []
       requestBody:
         required: true
         content:
@@ -45,12 +47,8 @@ paths:
         - "Auth"
       summary: "ログアウト"
       operationId: "authLogout"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Token"
+      security:
+        - Bearer: []
       responses:
         "200":
           description: "successful operation"
@@ -411,11 +409,6 @@ components:
         email:
           type: "string"
         password:
-          type: "string"
-    Token:
-      type: "object"
-      properties:
-        token:
           type: "string"
     User:
       type: "object"

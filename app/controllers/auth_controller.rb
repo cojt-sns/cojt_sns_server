@@ -41,13 +41,7 @@ class AuthController < ApplicationController
 
   # POST /auth/logout
   def logout
-    # tokenが送信されたか確認
-    if params[:autn_token].nil?
-      render json: { "code": 400, "message": 'ログイン情報がないため、ログアウトできません' }, status: :bad_request
-      return
-    end
-
-    auth = AuthenticateToken.find_by(token: params[:auth_token])
+    auth = AuthenticateToken.find_by(token: @token)
 
     # トークンの存在を確認
     if auth.nil?
