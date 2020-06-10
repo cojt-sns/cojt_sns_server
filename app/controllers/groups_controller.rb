@@ -3,48 +3,27 @@ class GroupsController < ApplicationController
 
   # get /groups
   def index
-    if params[:Tagid].nil?
+    if params[:tag_ids].nil?
       groupSearchResult=Group.find_by(public: true)
       render json:groupSearchResult
       return 
     end
 
-    tag = Tag.find_by(id: params[:Tagid])
+    tag = Tag.find_by(id: params[:tag_ids])
 
     if tag.nil?
       render json:{ "code": 402, "message": "該当するタグが存在しません。"}, status: 402
       return 
     end
     groupSearchResult=tag.groups
+
     render json:groupSearchResult
   end
 
   # post /groups
   def create
-    #tokenが送信されたか確認
-    if params[:auth_token].nil?
-      render json: { "code": 400, "message": "ログイン情報がないため、ログアウトできません"}, status: 400
-      return
-    end
-
-    auth = AuthenticateToken.find_by(token: params[:auth_token])
-
-    # トークンの存在を確認
-    if auth.nil?
-      render json: { "message": "トークンが存在しません" }, status: 401
-      return
-    end
-
-    if Group.find_by(id: params[:id])
-      render json: { "code": 402, "message": "すでに存在するidのため作成できません"}, status: 402
-      return 
-    end
 
     #必須項目が入力されたか確認 
-    if params[:id].nil?
-      render json: { "code": 400, "message": "idを入力してください。"}, status: 400
-      return 
-    end
     if params[:questions].nil?
       render json: { "code": 400, "message": "質問事項を入力してください。"}, status: 400
       return 
@@ -54,8 +33,24 @@ class GroupsController < ApplicationController
       return 
     end
 
-    group=Group.new(id: params[:id],public:true,twitter_traceability: false,questions:params[:questions],introduction:false)
-    
+    questions=params[:questions]
+    question_text=""
+    questions.each do |question|
+      if question.include?("$")
+        render json: { "code": 400, "message": "質問事項に「$」を含めないでください。"}, status: 400
+        return 
+      end
+      question_text = question_text+"$"+question
+    end
+    question_text=question_text[1,question_text.length]
+
+    tags=[]
+    params[:tags].each do |tag1|
+      tags.push(Tag.find(tag1))
+    end
+
+    group=Group.new(public:true,twitter_traceability: false,questions:question_text,introduction:false,tags:tags)
+
     #必須でない項目の入力があれば、代入  
     if params[:twitter_traceability]
       group.twitter_traceability=params[:twitter_traceability]
@@ -67,13 +62,18 @@ class GroupsController < ApplicationController
       group.public=params[:public]
     end
 
+    if !group.valid?
+      render json: { "code": 400, "message":group.errors.messages }, status: 400
+      return
+    end
+    
     #groupを作れなかった時のエラー
     if !group.save
       render json: { "code": 500, "message": "グループを生成できませんでした。" }, status: 500
       return
     end
 
-    render json: { "code": 200, "message": "グループを作成しました。" }
+    render json:{"id":group.id,"public":group.public,"twitter_traceability": group.twitter_traceability,"questions":group.questions,"introduction":group.introduction,"tags":group.tags.pluck("id")}
   end
 
   # get /groups/{id}
@@ -89,24 +89,12 @@ class GroupsController < ApplicationController
       return 
     end
     
-    render json:group
+    render json:{"id":group.id,"public":group.public,"twitter_traceability": group.twitter_traceability,"questions":group.questions,"introduction":group.introduction,"tags":group.tags.pluck("id")}
+  
   end
 
   # put /groups/{id}
   def update
-    #認証トークンがない場合のエラー
-    if params[:auth_token].nil?
-      render json: { "code": 400, "message": "ログイン情報がないため、ログアウトできません"}, status: 400
-      return
-    end
-
-    auth = AuthenticateToken.find_by(token: params[:auth_token])
-    
-    # トークンの存在を確認
-    if auth.nil?
-      render json: { "message": "トークンが存在しません" }, status: 401
-      return
-    end
 
     group = Group.find_by(id: params[:id])
 
@@ -116,14 +104,7 @@ class GroupsController < ApplicationController
       return 
     end
 
-    #グループメンバーか否かの判定?
-    # if !group.public?
-    #   render json: { "code": 403, "message": "グループメンバーでないため、グループの質問事項の編集はできません"}, status: 403
-    #   return 
-    # end
-
-
-    #group.update_attribute(id: params[:id],twitter_traceability: params[:twitter_traceability],questions:params[:questions],introduction:params[:introduction],tags:params[:tags])
+    #グループメンバーか否か?
 
     if params[:tags]
       group.tags=params[:tags]
@@ -146,6 +127,6 @@ class GroupsController < ApplicationController
       return
     end
 
-    render json: { "code": 200, "message": "グループ情報を更新しました。" }
+    render json:{"id":group.id,"public":group.public,"twitter_traceability": group.twitter_traceability,"questions":group.questions,"introduction":group.introduction,"tags":group.tags.pluck("id")}
   end
 end
