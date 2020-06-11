@@ -8,8 +8,22 @@
 
 user = User.create(email: 'test@test.com', password: 'abcd1234', name: 'test')
 
+tag = Tag.create(name: 'スマブラ')
+
 tag1 = Tag.create(name: "筑波大学")
-tag2 = tag1.children.create(name: "情報学群")
-tag3 = tag2.children.create(name: "情報メディア創成学類")
-tag4 = tag2.children.create(name: "知識情報・図書館学類")
-tag5 = tag2.children.create(name: "情報科学類")
+tag2 = tag1.children.build(name: "情報学群")
+tag3 = tag2.children.build(name: "情報メディア創成学類")
+tag4 = tag2.children.build(name: "知識情報・図書館学類")
+tag5 = tag2.children.build(name: "情報科学類")
+
+tag1.save
+tag2.save
+tag3.save
+tag4.save
+tag5.save
+
+group = Group.create(public: true, twitter_traceability: true, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag])
+
+group1 = Group.create(public: true, twitter_traceability: true, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag1])
+
+group2 = Group.create(public: true, twitter_traceability: true, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag, tag3])

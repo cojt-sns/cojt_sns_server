@@ -3,8 +3,10 @@ class Tag < ApplicationRecord
 
   # rubocop:disable Rails/HasAndBelongsToMany
   has_and_belongs_to_many :users
-  has_and_belongs_to_many :groups
   # rubocop:enable Rails/HasAndBelongsToMany
+
+  has_many :group_tags, dependent: :destroy
+  has_many :groups, through: :group_tags
 
   validates :name, format: { with: %r{\A[^\.\#@/\\]+\z} }
   validate :same_hierarchy_same_name
