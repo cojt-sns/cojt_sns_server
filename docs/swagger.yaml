@@ -420,12 +420,42 @@ paths:
       summary: "グループを検索する"
       operationId: "searchPost"
       parameters:
-        - name: "tagId"
+        - name: "content"
           in: "query"
-          description: "検索 tagId 指定しない場合は全件検索 privateのグループは見れないようにする"
-          required: false
+          description: "content"
+          schema:
+            type: "string"
+        - name: "from"
+          in: "query"
+          description: "投稿先ユーザー"
           schema:
             type: "integer"
+        - name: "since"
+          in: "query"
+          description: "開始日"
+          schema:
+            type: "string"
+        - name: "until"
+          in: "query"
+          description: "終了日"
+          schema:
+            type: "string"
+        - name: "since_timestamp"
+          in: "query"
+          description: "開始タイムスタンプ"
+          schema:
+            type: "string"
+        - name: "until_timestamp"
+          in: "query"
+          description: "終了タイムスタンプ"
+          schema:
+            type: "string"
+        - name: "max"
+          in: "query"
+          description: "投稿の最大件数"
+          schema:
+            type: "integer"
+            default: 100
       responses:
         "200":
           description: "successful operation "
