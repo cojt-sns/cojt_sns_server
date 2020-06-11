@@ -620,7 +620,7 @@ paths:
       parameters:
         - name: "id"
           in: "path"
-          description: "GroupのID"
+          description: "PostのID"
           required: true
           schema:
             type: "integer"
