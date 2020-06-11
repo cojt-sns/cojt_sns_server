@@ -6,15 +6,15 @@ Rails:
 
 AllCops:
   Exclude:
-    - 'config/routes.rb'
-    - 'public/**/*'
-    - 'tmp/**/*'
-    - 'log/**/*'
-    - 'bin/**/*'
-    - 'db/**/*'
-    - 'spec/**/*'
-    - 'vendor/**/*'
-    - 'node_modules/**/*'
+    - "config/routes.rb"
+    - "public/**/*"
+    - "tmp/**/*"
+    - "log/**/*"
+    - "bin/**/*"
+    - "db/**/*"
+    - "spec/**/*"
+    - "vendor/**/*"
+    - "node_modules/**/*"
 
 Style/AsciiComments:
   Enabled: false
@@ -31,21 +31,24 @@ Style/Lambda:
 Style/ClassAndModuleChildren:
   Enabled: false
 
+Lint/NonLocalExitFromIterator:
+  Enabled: false
+
 Naming/FileName:
   Exclude:
-    - 'Gemfile'
+    - "Gemfile"
 
 Style/PercentLiteralDelimiters:
   PreferredDelimiters:
-    '%':  ()
-    '%i': ()
-    '%q': ()
-    '%Q': ()
-    '%r': '{}'
-    '%s': ()
-    '%w': ()
-    '%W': ()
-    '%x': ()
+    "%": ()
+    "%i": ()
+    "%q": ()
+    "%Q": ()
+    "%r": "{}"
+    "%s": ()
+    "%w": ()
+    "%W": ()
+    "%x": ()
 
 Metrics/AbcSize:
   Max: 30
@@ -58,6 +61,9 @@ Metrics/BlockLength:
 
 Metrics/MethodLength:
   Max: 150
+
+Metrics/ClassLength:
+  Max: 500
 
 Metrics/CyclomaticComplexity:
   Max: 20

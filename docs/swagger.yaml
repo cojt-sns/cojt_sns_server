@@ -298,12 +298,19 @@ paths:
       summary: "グループを検索する"
       operationId: "searchGroup"
       parameters:
-        - name: "tagId"
+        - name: "tag_ids"
           in: "query"
-          description: "検索 tagId 指定しない場合は全件検索 privateのグループは見れないようにする"
+          description: "検索するタグ。複数指定可能"
           required: false
           schema:
-            type: "integer"
+            type: "string"
+        - name: "or"
+          in: "query"
+          description: "or検索をするか"
+          required: false
+          schema:
+            type: "boolean"
+            default: false
       responses:
         "200":
           description: "successful operation "
@@ -719,6 +726,11 @@ components:
           type: "string"
         password:
           type: "string"
+    Token:
+      type: "object"
+      properties:
+        token:
+          type: "string"
     User:
       type: "object"
       properties:
@@ -864,13 +876,7 @@ components:
       type: array
       description: "グループの検索結果"
       items:
-        $ref: "#/components/schemas/GroupSearchResultCandidate"
-    GroupSearchResultCandidate:
-      type: object
-      description: "グループの検索結果1件"
-      properties:
-        group:
-          $ref: "#/components/schemas/Group"
+        $ref: "#/components/schemas/Group"
     Post:
       type: "object"
       required:
@@ -902,6 +908,6 @@ components:
 
     PostSearchResult:
       type: array
-      description: "グループの検索結果"
+      description: "ポストの検索結果"
       items:
         $ref: "#/components/schemas/Post"
