@@ -70,3 +70,6 @@ Metrics/CyclomaticComplexity:
 
 Metrics/PerceivedComplexity:
   Max: 20
+
+Layout/EndOfLine:
+  Enabled: false
