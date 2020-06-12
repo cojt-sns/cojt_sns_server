@@ -1,8 +1,7 @@
 class PostsController < ApplicationController
   before_action :authenticate, only: %i(show update destroy)
-  def new
-
-  end
+  # def new
+  # end
 
   # get /posts/{id}
   def show
@@ -40,6 +39,11 @@ class PostsController < ApplicationController
       return
     end
 
+    unless @user.id==post.user_id
+      render json: { "code": 403, "message": '投稿者でなければ、編集できません' }, status: :forbidden
+      return
+    end
+
     post.content=params[:content]
 
     render json: post.json
@@ -58,10 +62,16 @@ class PostsController < ApplicationController
       return
     end
 
+    unless @user.id==post.user_id
+      render json: { "code": 403, "message": '投稿者でなければ、投稿を消去できません' }, status: :forbidden
+      return
+    end
+
     unless post.destroy
       render json: { "code": 500, "message": '投稿の削除に失敗しました' }, status: :internal_server_error
       return
     end
+
     render json: { "code": 200, "message": '削除しました' }, status: :ok
   end
 end
