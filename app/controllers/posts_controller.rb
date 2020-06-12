@@ -9,8 +9,8 @@ class PostsController < ApplicationController
       render json: { code: '400', message: 'Bad Request' }, status: :bad_request
       return
     end
-    
-    post=Post.find_by(id:params[:id])
+
+    post = Post.find_by(id: params[:id])
 
     unless post.group.public
       render json: { "code": 403, "message": 'privateグループの投稿なので、見れません' }, status: :forbidden
@@ -21,7 +21,7 @@ class PostsController < ApplicationController
       render json: { code: '404', message: '存在しない投稿です' }, status: :not_found
       return
     end
-    
+
     render json: post.json
   end
 
@@ -32,19 +32,19 @@ class PostsController < ApplicationController
       return
     end
 
-    post=Post.find_by(id:params[:id])
+    post = Post.find_by(id: params[:id])
 
     if post.nil?
       render json: { code: '404', message: '存在しない投稿です' }, status: :not_found
       return
     end
 
-    unless @user.id==post.user_id
+    unless @user.id == post.user_id
       render json: { "code": 403, "message": '投稿者でなければ、編集できません' }, status: :forbidden
       return
     end
 
-    post.content=params[:content]
+    post.content = params[:content]
 
     render json: post.json
   end
@@ -55,14 +55,14 @@ class PostsController < ApplicationController
       render json: { code: '400', message: 'Bad Request' }, status: :bad_request
       return
     end
-    post=Post.find_by(id:params[:id])
+    post = Post.find_by(id: params[:id])
 
     if post.nil?
       render json: { code: '404', message: '存在しない投稿です' }, status: :not_found
       return
     end
 
-    unless @user.id==post.user_id
+    unless @user.id == post.user_id
       render json: { "code": 403, "message": '投稿者でなければ、投稿を消去できません' }, status: :forbidden
       return
     end

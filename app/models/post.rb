@@ -8,7 +8,7 @@ class Post < ApplicationRecord
       "content": content,
       "user_id": user_id,
       "group_id": group_id,
-      "created_at": created_at,
+      "created_at": created_at
     }
   end
 end
