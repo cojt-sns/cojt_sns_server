@@ -39,7 +39,7 @@ class PostsController < ApplicationController
       return
     end
 
-    unless @user.id == post.user_id
+    unless @user.id == post.user
       render json: { "code": 403, "message": '投稿者でなければ、編集できません' }, status: :forbidden
       return
     end
@@ -62,7 +62,7 @@ class PostsController < ApplicationController
       return
     end
 
-    unless @user.id == post.user_id
+    unless @user.id == post.user
       render json: { "code": 403, "message": '投稿者でなければ、投稿を消去できません' }, status: :forbidden
       return
     end
