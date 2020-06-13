@@ -50,6 +50,4 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   config.reload_classes_only_on_change = false
-
-  config.public_file_server.enabled = true
 end
