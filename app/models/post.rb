@@ -12,6 +12,7 @@ class Post < ApplicationRecord
     }
   end
 
+
   scope :content_like, -> (value) {
     where("content LIKE ?", "%#{value}%") if value.present?
   }
