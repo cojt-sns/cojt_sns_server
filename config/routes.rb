@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'posts/new'
   get 'health_check', to: 'application#health_check'
 
   post 'auth/login'

@@ -8,6 +8,83 @@ class PostsController < ApplicationController
 
     render json: posts.map(&:json).to_json
   end
+  
+  # get /posts/{id}
+  def show
+    if params[:id].nil? || params[:id] =~ /[^0-9]+/
+      render json: { code: '400', message: 'Bad Request' }, status: :bad_request
+      return
+    end
+
+    post = Post.find_by(id: params[:id])
+
+    if post.nil?
+      render json: { code: '404', message: '存在しない投稿です' }, status: :not_found
+      return
+    end
+
+    unless post.group.users.where(id: @user&.id).exists?
+      render json: { "code": 403, "message": '不正なアクセスです・' }, status: :forbidden
+      return
+    end
+
+    render json: post.json
+  end
+
+  # put /posts/{id}
+  def update
+    if params[:id].nil? || params[:id] =~ /[^0-9]+/
+      render json: { code: '400', message: 'Bad Request' }, status: :bad_request
+      return
+    end
+
+    post = Post.find_by(id: params[:id])
+
+    if post.nil?
+      render json: { code: '404', message: '存在しない投稿です' }, status: :not_found
+      return
+    end
+
+    unless @user == post.user
+      render json: { "code": 403, "message": '投稿者でなければ、編集できません' }, status: :forbidden
+      return
+    end
+
+    post.content = params[:content]
+
+    unless post.save
+      render json: { "code": 500, "message": '更新できませんでした。' }, status: :internal_server_error
+      return
+    end
+
+    render json: post.json
+  end
+
+  # delete /posts/{id}
+  def destroy
+    if params[:id].nil? || params[:id] =~ /[^0-9]+/
+      render json: { code: '400', message: 'Bad Request' }, status: :bad_request
+      return
+    end
+    post = Post.find_by(id: params[:id])
+
+    if post.nil?
+      render json: { code: '404', message: '存在しない投稿です' }, status: :not_found
+      return
+    end
+
+    unless @user == post.user
+      render json: { "code": 403, "message": '投稿者でなければ、投稿を消去できません' }, status: :forbidden
+      return
+    end
+
+    unless post.destroy
+      render json: { "code": 500, "message": '投稿の削除に失敗しました' }, status: :internal_server_error
+      return
+    end
+
+    render json: post.json, status: :ok
+  end
 
   # get /groups/:id/public/posts
   def public_group
@@ -53,50 +130,6 @@ class PostsController < ApplicationController
     render json: posts.map(&:json).to_json
   end
 
-  # post /groups/:id/posts
-  def create
-    render json: {
-      "id": 1,
-      "content": 'こんにちは！',
-      "user_id": 1,
-      "group_id": 1,
-      "created_at": '2020-06-09T09:20:52.220Z'
-    }
-  end
-
-  # put /posts/:id
-  def update
-    render json: {
-      "id": 1,
-      "content": 'こんにちは！',
-      "user_id": 1,
-      "group_id": 1,
-      "created_at": '2020-06-09T09:20:52.220Z'
-    }
-  end
-
-  # get /posts/:id
-  def show
-    render json: {
-      "id": 1,
-      "content": 'こんにちは！',
-      "user_id": 1,
-      "group_id": 1,
-      "created_at": '2020-06-09T09:20:52.220Z'
-    }
-  end
-
-  # delete /posts/:id
-  def destroy
-    render json: {
-      "id": 1,
-      "content": 'こんにちは！',
-      "user_id": 1,
-      "group_id": 1,
-      "created_at": '2020-06-09T09:20:52.220Z'
-    }
-  end
-
   private
 
   def posts_params
@@ -110,5 +143,4 @@ class PostsController < ApplicationController
                              since_timestamp: search_params['since_timestamp'])
          .from_user(search_params['from'])
          .limit(search_params['max'])
-  end
 end

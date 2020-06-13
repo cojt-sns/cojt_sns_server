@@ -22,7 +22,7 @@ tag3.save
 tag4.save
 tag5.save
 
-group = Group.create(public: true, twitter_traceability: true, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag])
+group = Group.create(public: true, twitter_traceability: true, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag], users: [user])
 
 group1 = Group.create(public: true, twitter_traceability: true, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag1])
 
@@ -42,3 +42,4 @@ post2 = Post.create(content: "post2", user_id: user.id, group_id: group.id, crea
 post3 = Post.create(content: "post3", user_id: user.id, group_id: group1.id, created_at: Time.now + 3.hour)
 post4 = Post.create(content: "post4", user_id: user.id, group_id: group1.id, created_at: Time.now + 4.hour)
 post5 = Post.create(content: "post5", user_id: user.id, group_id: group1.id, created_at: Time.now + 1.day)
+post = Post.create(content: "こんにちは！", group: group, user: user)
