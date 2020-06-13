@@ -5,7 +5,11 @@ Rails.application.routes.draw do
   post 'auth/login'
   post 'auth/logout'
   
-  resources :groups, only: [:index, :create, :show, :update]
+  resources :groups, only: [:index, :create, :show, :update] do
+    get 'public/posts', to: 'posts#public_group', on: :member
+    get 'posts', to: 'posts#group', on: :member
+    post 'posts', to: 'posts#create', on: :member
+  end
 
   resources :tags, only: [:index, :show, :create]
 
@@ -13,5 +17,6 @@ Rails.application.routes.draw do
     get 'tags', to: 'users#tags', on: :member
     get 'twitter_profile', to: 'users#twitter_profile', on: :member
   end
-  resources :posts, only: [:show, :update, :destroy]
+
+  resources :posts, only: [:index, :show, :update, :destroy]
 end

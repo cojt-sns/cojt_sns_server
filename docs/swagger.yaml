@@ -263,7 +263,7 @@ paths:
                 $ref: "#/components/schemas/Tag"
         "400":
           description: "リクエスト不正"
-        "402":
+        "401":
           description: "認証不正"
         "500":
           description: "Internal Server Error"
@@ -318,7 +318,7 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/GroupSearchResult"
-        "402":
+        "401":
           description: "認証不正"
         "500":
           description: "Internal Server Error"
@@ -344,7 +344,7 @@ paths:
                 $ref: "#/components/schemas/Group"
         "400":
           description: "不正なリクエストです。"
-        "402":
+        "401":
           description: "認証不正"
         "500":
           description: "Internal Server Error"
@@ -405,7 +405,7 @@ paths:
                 $ref: "#/components/schemas/Group"
         "400":
           description: "Invalid user supplied"
-        "402":
+        "401":
           description: "認証不正"
         "403":
           description: "不正なアクセスです。"
@@ -420,20 +420,50 @@ paths:
       summary: "グループを検索する"
       operationId: "searchPost"
       parameters:
-        - name: "tagId"
+        - name: "content"
           in: "query"
-          description: "検索 tagId 指定しない場合は全件検索 privateのグループは見れないようにする"
-          required: false
+          description: "content"
+          schema:
+            type: "string"
+        - name: "from"
+          in: "query"
+          description: "投稿先ユーザー"
           schema:
             type: "integer"
+        - name: "since"
+          in: "query"
+          description: "開始日"
+          schema:
+            type: "string"
+        - name: "until"
+          in: "query"
+          description: "終了日"
+          schema:
+            type: "string"
+        - name: "since_timestamp"
+          in: "query"
+          description: "開始タイムスタンプ"
+          schema:
+            type: "string"
+        - name: "until_timestamp"
+          in: "query"
+          description: "終了タイムスタンプ"
+          schema:
+            type: "string"
+        - name: "max"
+          in: "query"
+          description: "投稿の最大件数"
+          schema:
+            type: "integer"
+            default: 100
       responses:
         "200":
           description: "successful operation "
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/GroupSearchResult"
-        "402":
+                $ref: "#/components/schemas/PostSearchResult"
+        "401":
           description: "認証不正"
         "500":
           description: "Internal Server Error"
@@ -496,7 +526,7 @@ paths:
                 $ref: "#/components/schemas/PostSearchResult"
         "400":
           description: "リクエスト不正"
-        "402":
+        "401":
           description: "認証不正"
         "403":
           description: "パブリックグループではありません。"
@@ -565,7 +595,7 @@ paths:
                 $ref: "#/components/schemas/PostSearchResult"
         "400":
           description: "リクエスト不正"
-        "402":
+        "401":
           description: "認証不正"
         "403":
           description: "グループへの権限がありません。"
@@ -603,7 +633,7 @@ paths:
                 $ref: "#/components/schemas/Post"
         "400":
           description: "グループが存在しない。contentがない。"
-        "402":
+        "401":
           description: "認証不正"
         "403":
           description: "グループに投稿する権限がない"
@@ -631,7 +661,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Post"
-        "402":
+        "401":
           description: "認証不正"
         "403":
           description: "不正なアクセスです。"
@@ -675,7 +705,7 @@ paths:
                 $ref: "#/components/schemas/Post"
         "400":
           description: "リクエスト不正"
-        "402":
+        "401":
           description: "認証不正"
         "403":
           description: "不正なアクセスです。"
@@ -704,7 +734,7 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/Post"
-        "402":
+        "401":
           description: "認証不正"
         "403":
           description: "ユーザに権限が存在しない"
