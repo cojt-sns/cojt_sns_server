@@ -27,3 +27,9 @@ group = Group.create(public: true, twitter_traceability: true, questions: '["ス
 group1 = Group.create(public: true, twitter_traceability: true, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag1])
 
 group2 = Group.create(public: true, twitter_traceability: true, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag, tag3])
+
+post1 = Post.create(content: "post1", user_id: user.id, group_id: group.id, created_at: Time.now + 1.hour)
+post2 = Post.create(content: "post2", user_id: user.id, group_id: group.id, created_at: Time.now + 2.hour)
+post3 = Post.create(content: "post3", user_id: user.id, group_id: group1.id, created_at: Time.now + 3.hour)
+post4 = Post.create(content: "post4", user_id: user.id, group_id: group1.id, created_at: Time.now + 4.hour)
+post4 = Post.create(content: "post5", user_id: user.id, group_id: group1.id, created_at: Time.now + 1.day)
