@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   # /users
   def create
     if params[:tags].present? && !params[:tags].is_a?(Array)
-      render json: { "code": 400, "message": "タグの指定が不適切です" }, status: :bad_request
+      render json: { "code": 400, "message": 'タグの指定が不適切です' }, status: :bad_request
       return
     end
 
@@ -44,10 +44,12 @@ class UsersController < ApplicationController
     render json: user.json
   end
 
+  # rubocop:disable Metrics/AbcSize
+
   # /users/:id
   def update
     if params[:tags].present? && !params[:tags].is_a?(Array)
-      render json: { "code": 400, "message": "タグの指定が不適切です" }, status: :bad_request
+      render json: { "code": 400, "message": 'タグの指定が不適切です' }, status: :bad_request
       return
     end
 
@@ -88,6 +90,8 @@ class UsersController < ApplicationController
 
     render json: user.json
   end
+
+  # rubocop:enable Metrics/AbcSize
 
   # /users/:id
   def destroy
