@@ -8,7 +8,7 @@ class PostsController < ApplicationController
 
     render json: posts.map(&:json).to_json
   end
-  
+
   # get /posts/{id}
   def show
     if params[:id].nil? || params[:id] =~ /[^0-9]+/
@@ -130,6 +130,32 @@ class PostsController < ApplicationController
     render json: posts.map(&:json).to_json
   end
 
+  # post /groups/:id/posts
+  def create
+    params = posts_params
+    group = Group.find_by(id: params[:id])
+    if group.blank?
+      render json: { "code": 404, "message": 'グループが存在しません' }, status: :not_found
+      return
+    end
+
+    unless @user.groups.ids.include?(group.id)
+      render json: { "code": 403, "message": 'グループへの権限がありません' }, status: :forbidden
+      return
+    end
+
+    post = Post.new
+    post.content = params[:content]
+    post.user = @user
+
+    unless post.save
+      render json: { "code": 500, "message": '投稿できませんでした。' }, status: :internal_server_error
+      return
+    end
+
+    render json: post.json
+  end
+
   private
 
   def posts_params
@@ -143,4 +169,5 @@ class PostsController < ApplicationController
                              since_timestamp: search_params['since_timestamp'])
          .from_user(search_params['from'])
          .limit(search_params['max'])
+  end
 end

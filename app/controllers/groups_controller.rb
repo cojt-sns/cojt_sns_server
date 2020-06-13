@@ -137,7 +137,7 @@ class GroupsController < ApplicationController
     # TODO: グループメンバーか否か
 
     if params[:tags]
-      group.tag = []
+      group.tags = []
       params[:tags].each do |tag_id|
         tag = Tag.find_by(id: tag_id)
         if tag.nil?
