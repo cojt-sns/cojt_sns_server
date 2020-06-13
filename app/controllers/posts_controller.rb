@@ -44,7 +44,7 @@ class PostsController < ApplicationController
     # puts @user.groups.ids
     # puts "\n\n\n\n"
     unless @user.groups.ids.include?(group.id)
-      render json: { "code": 403, "message": 'グループへの権限がありません' }, status: :not_found
+      render json: { "code": 403, "message": 'グループへの権限がありません' }, status: :forbidden
       return
     end
 
