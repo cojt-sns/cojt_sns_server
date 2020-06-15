@@ -1,5 +1,5 @@
 class AuthController < ApplicationController
-  before_action :authenticate, only: [:logout, :user]
+  before_action :authenticate, only: %i(logout user)
 
   # POST /auth/login
   def login
