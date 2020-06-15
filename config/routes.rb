@@ -19,4 +19,6 @@ Rails.application.routes.draw do
   end
 
   resources :posts, only: [:index, :show, :update, :destroy]
+
+  mount ActionCable.server => '/cable'
 end
