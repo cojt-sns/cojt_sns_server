@@ -3,6 +3,11 @@ class UsersController < ApplicationController
 
   # /users
   def create
+    if params[:tags].present? && !params[:tags].is_a?(Array)
+      render json: { "code": 400, "message": 'タグの指定が不適切です' }, status: :bad_request
+      return
+    end
+
     user = User.new(user_params)
 
     unless user.valid?
@@ -10,13 +15,18 @@ class UsersController < ApplicationController
       return
     end
 
+    params[:tags]&.map do |tag_id|
+      tag = Tag.find_by(id: tag_id)
+      if tag.nil?
+        render json: { "code": 400, "message": '存在しないタグを指定しています' }, status: :bad_request
+        return
+      end
+      user.tags << tag
+    end
+
     unless user.save
       render json: { "code": 500, "message": 'ユーザーの作成に失敗しました' }, status: :internal_server_error
       return
-    end
-
-    params[:tags]&.map do |tag_id|
-      user.tags << Tag.find(tag_id)
     end
 
     render json: user.json
@@ -34,8 +44,15 @@ class UsersController < ApplicationController
     render json: user.json
   end
 
+  # rubocop:disable Metrics/AbcSize
+
   # /users/:id
   def update
+    if params[:tags].present? && !params[:tags].is_a?(Array)
+      render json: { "code": 400, "message": 'タグの指定が不適切です' }, status: :bad_request
+      return
+    end
+
     user = User.find_by(id: params[:id])
 
     if user.blank?
@@ -51,6 +68,16 @@ class UsersController < ApplicationController
 
     user.attributes = user_params
 
+    user.tags = [] if params[:tags]
+    params[:tags]&.map do |tag_id|
+      tag = Tag.find_by(id: tag_id)
+      if tag.nil?
+        render json: { "code": 400, "message": '存在しないタグを指定しています' }, status: :bad_request
+        return
+      end
+      user.tags << tag
+    end
+
     unless user.valid?
       render json: { "code": 400, "message": user.errors.messages }, status: :bad_request
       return
@@ -63,6 +90,8 @@ class UsersController < ApplicationController
 
     render json: user.json
   end
+
+  # rubocop:enable Metrics/AbcSize
 
   # /users/:id
   def destroy
@@ -89,7 +118,13 @@ class UsersController < ApplicationController
 
   # /users/:id/tags
   def tags
-    user = User.find([params[:id]]).first
+    user = User.find_by(id: params[:id])
+
+    if user.blank?
+      render json: { "code": 404, "message": 'ユーザが見つかりません。' }, status: :not_found
+      return
+    end
+
     res = []
     res = user.tags.map(&:json) if user.tags.present?
     render json: res
