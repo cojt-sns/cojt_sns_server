@@ -1,5 +1,5 @@
 class AuthController < ApplicationController
-  before_action :authenticate, only: [:logout]
+  before_action :authenticate, only: %i(logout user)
 
   # POST /auth/login
   def login
@@ -57,5 +57,15 @@ class AuthController < ApplicationController
     end
 
     render json: { "code": 200, "message": 'ログアウトしました。' }
+  end
+
+  # get /auth/user
+  def user
+    if @user.nil?
+      render json: { "message": 'ユーザーが存在しません' }, status: :internal_server_error
+      return
+    end
+
+    render json: @user.json
   end
 end

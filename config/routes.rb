@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
-  get 'posts/new'
   get 'health_check', to: 'application#health_check'
 
   post 'auth/login'
   post 'auth/logout'
+  get 'auth/user'
   
   resources :groups, only: [:index, :create, :show, :update] do
     get 'public/posts', to: 'posts#public_group', on: :member
