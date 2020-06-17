@@ -184,6 +184,28 @@ paths:
                 $ref: "#/components/schemas/UserTags"
         "500":
           description: "Internal Server Error"
+  /users/{id}/groups:
+    get:
+      tags:
+        - "User"
+      summary: "特定のユーザーの属するグループを返す"
+      operationId: "getUserTags"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ユーザのID"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/UserTags"
+        "500":
+          description: "Internal Server Error"
   /users/{id}/twitter_profile:
     get:
       tags:
