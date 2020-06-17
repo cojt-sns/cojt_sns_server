@@ -57,6 +57,8 @@ class PostsController < ApplicationController
       return
     end
 
+    ActionCable.server.broadcast("group_#{post.group.id}", update: post.json)
+
     render json: post.json
   end
 
@@ -147,11 +149,14 @@ class PostsController < ApplicationController
     post = Post.new
     post.content = params[:content]
     post.user = @user
+    post.group = group
 
     unless post.save
       render json: { "code": 500, "message": '投稿できませんでした。' }, status: :internal_server_error
       return
     end
+
+    ActionCable.server.broadcast("group_#{group.id}", new: post.json)
 
     render json: post.json
   end

@@ -15,7 +15,7 @@ class ApplicationController < ActionController::API
       @token = token
       @user = auth&.user
 
-      !auth.nil? && auth.active && auth.created_at > Time.zone.now - 1.hour
+      !auth.nil? && auth.check
     end
   end
 end
