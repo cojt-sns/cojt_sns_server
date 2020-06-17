@@ -439,6 +439,79 @@ paths:
           description: "そのIDのグループが存在しない"
         "500":
           description: "Internal Server Error"
+  /groups/{id}/join:
+    post:
+      tags:
+        - "Group"
+      summary: "グループに参加する"
+      description: |
+        ログインユーザと参加するユーザが同じ時、かつパブリックグループなら参加可能。
+        また、ログインユーザと参加するユーザが違うとき、ログインユーザが対象となるグループに属しているなら、
+        全グループ参加可能
+      operationId: "joinGroup"
+      security:
+        - Bearer: []
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "グループのID"
+          required: true
+          schema:
+            type: "integer"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - user_id
+              properties:
+                user_id:
+                  type: "integer"
+                  example: 1
+                  description: ユーザーID
+      responses:
+        "200":
+          description: "successful operation "
+        "400":
+          description: "既に参加している。または、リクエスト不正。"
+        "401":
+          description: "認証不正"
+        "403":
+          description: "参加する権限がない"
+        "404":
+          description: "グループまたはユーザが存在しない"
+        "500":
+          description: "Internal Server Error"
+  /groups/{id}/leave:
+    post:
+      tags:
+        - "Group"
+      summary: "グループから抜ける"
+      description: |
+        ログインユーザを対象とする。他人を抜けさせる(いわゆるBAN)機能は、後に実装
+      operationId: "leaveGroup"
+      security:
+        - Bearer: []
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "グループのID"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation "
+        "400":
+          description: "リクエスト不正。"
+        "401":
+          description: "認証不正"
+        "404":
+          description: "グループが存在しない"
+        "500":
+          description: "Internal Server Error"
   /posts:
     get:
       tags:

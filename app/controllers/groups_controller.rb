@@ -1,5 +1,5 @@
 class GroupsController < ApplicationController
-  before_action :authenticate, only: %i(create update)
+  before_action :authenticate, only: %i(create update join leave)
 
   # rubocop:disable Metrics/AbcSize
 
@@ -134,7 +134,10 @@ class GroupsController < ApplicationController
       return
     end
 
-    # TODO: グループメンバーか否か
+    unless group.users.ids.include?(@user.id)
+      render json: { "code": 403, "message": 'メンバーでないため、更新できませんでした。' }, status: :forbidden
+      return
+    end
 
     if params[:tags]
       group.tags = []
@@ -167,4 +170,12 @@ class GroupsController < ApplicationController
   end
 
   # rubocop:enable Metrics/AbcSize
+
+  # post /groups/:id/join
+  def join
+  end
+
+  # post /groups/:id/leave
+  def leave
+  end
 end
