@@ -57,6 +57,8 @@ class PostsController < ApplicationController
       return
     end
 
+    ActionCable.server.broadcast("group_#{post.group.id}", update: post.json)
+
     render json: post.json
   end
 
@@ -154,7 +156,7 @@ class PostsController < ApplicationController
       return
     end
 
-    ActionCable.server.broadcast("group_#{group.id}", post: post.json)
+    ActionCable.server.broadcast("group_#{group.id}", new: post.json)
 
     render json: post.json
   end
