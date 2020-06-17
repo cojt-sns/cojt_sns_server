@@ -188,8 +188,10 @@ paths:
     get:
       tags:
         - "User"
+      security:
+        - Bearer: []
       summary: "特定のユーザーの属するグループを返す"
-      operationId: "getUserTags"
+      operationId: "getUserGroups"
       parameters:
         - name: "id"
           in: "path"
@@ -204,6 +206,8 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/UserTags"
+        "404":
+          description: "User not found"
         "500":
           description: "Internal Server Error"
   /users/{id}/twitter_profile:
