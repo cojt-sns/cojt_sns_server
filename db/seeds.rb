@@ -7,6 +7,7 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 user = User.create(email: 'test@test.com', password: 'abcd1234', name: 'test')
+user2 = User.create(email: 'test2@test.com', password: 'abcd1234', name: 'test2')
 
 tag = Tag.create(name: 'スマブラ')
 
@@ -34,6 +35,10 @@ group4 = Group.create(public: false, twitter_traceability: false, questions: '["
 
 user.groups << group
 user.groups << group1
+
+user2.groups << group2
+user2.groups << group3
+user2.groups << group4
 
 user.save!
 

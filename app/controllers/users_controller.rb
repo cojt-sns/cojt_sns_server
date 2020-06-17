@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authenticate, only: %i(update destroy twitter_profile)
+  before_action :authenticate, only: %i(update destroy twitter_profile groups)
 
   # /users
   def create
@@ -128,6 +128,23 @@ class UsersController < ApplicationController
     res = []
     res = user.tags.map(&:json) if user.tags.present?
     render json: res
+  end
+
+  # /users/:id/groups
+  def groups
+    user = User.find_by(id: params[:id])
+
+    if @user == user
+      groups = @user.groups
+    else
+      if user.blank?
+        render json: { "code": 404, "message": 'ユーザが見つかりません。' }, status: :not_found
+        return
+      end
+      groups = user.groups.where(public: true)
+    end
+
+    render json: groups.map(&:json).to_json
   end
 
   # /users/:id/twitter_profile
