@@ -133,7 +133,7 @@ class UsersController < ApplicationController
   # /users/:id/groups
   def groups
     user = User.find_by(id: params[:id])
-    
+
     if @user == user
       groups = @user.groups
     else
