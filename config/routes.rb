@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
   resources :users, only: [:create, :show, :update, :destroy] do
     get 'tags', to: 'users#tags', on: :member
+    get 'groups', to: 'users#groups', on: :member
     get 'twitter_profile', to: 'users#twitter_profile', on: :member
   end
 
