@@ -20,11 +20,9 @@ class User < ApplicationRecord
       errors.add(:email, 'メールアドレスが適切でありません')
     end
   }
-  
+
   validate :groups, -> {
-    unless groups.ids.count == groups.ids.uniq.count
-      errors.add(:groups, 'グループが重複しています')
-    end
+    errors.add(:groups, 'グループが重複しています') unless groups.ids.count == groups.ids.uniq.count
   }
 
   def json
