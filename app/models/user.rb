@@ -21,6 +21,10 @@ class User < ApplicationRecord
     end
   }
 
+  validate :groups, -> {
+    errors.add(:groups, 'グループが重複しています') unless groups.ids.count == groups.ids.uniq.count
+  }
+
   def json
     {
       "id": id,
