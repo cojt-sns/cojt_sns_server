@@ -1,6 +1,8 @@
 class GroupsController < ApplicationController
   before_action :authenticate, only: %i(create update join leave)
 
+  # rubocop:disable Metrics/AbcSize
+
   # get /groups
   def index
     or_ = false
@@ -37,6 +39,8 @@ class GroupsController < ApplicationController
 
     render json: groups.uniq(&:id).map(&:json)
   end
+
+  # rubocop:eable Metrics/AbcSize
 
   # post /groups
   def create
@@ -163,6 +167,8 @@ class GroupsController < ApplicationController
     render json: group.json
   end
 
+  # rubocop:enable Metrics/AbcSize
+
   # post /groups/:id/join
   def join
     user = User.find_by(id: params[:user_id])
@@ -182,28 +188,25 @@ class GroupsController < ApplicationController
       return
     end
 
-    puts params[:user_id]
-    puts @user.id
-
-    if @user.id == user.id then
+    if @user == user
       if group.public
         group.users.push(user)
       else
         render json: { "code": 403, "message": 'このグループには参加できません' }, status: :forbidden
         return
       end
+    elsif group.users.include?(@user)
+      group.users.push(user)
     else
-      if group.users.include?(@user)
-        group.users.push(user)
-      else
-        render json: { "code": 403, "message": 'このグループには参加できません' }, status: :forbidden
-        return
-      end
+      render json: { "code": 403, "message": 'このグループには参加できません' }, status: :forbidden
+      return
     end
+
     unless group.save
       render json: { "code": 500, "message": 'グループに参加できませんでした。' }, status: :internal_server_error
       return
     end
+
     render json: { "code": 200, "message": 'successful operation' }
   end
 
@@ -217,7 +220,7 @@ class GroupsController < ApplicationController
     end
 
     unless group.users.include?(@user)
-      render json: { "code": 400, "message": 'このグループには参加していません' }, status:  :bad_request
+      render json: { "code": 400, "message": 'このグループには参加していません' }, status: :bad_request
       return
     end
 
