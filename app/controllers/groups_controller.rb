@@ -1,8 +1,6 @@
 class GroupsController < ApplicationController
   before_action :authenticate, only: %i(create update join leave)
 
-  # rubocop:disable Metrics/AbcSize
-
   # get /groups
   def index
     or_ = false
@@ -91,8 +89,6 @@ class GroupsController < ApplicationController
     render json: group.json
   end
 
-  # rubocop:enable Metrics/AbcSize
-
   # get /groups/{id}
   def show
     group = Group.find_by(id: params[:id])
@@ -109,8 +105,6 @@ class GroupsController < ApplicationController
 
     render json: group.json
   end
-
-  # rubocop:disable Metrics/AbcSize
 
   # put /groups/{id}
   def update
@@ -169,13 +163,70 @@ class GroupsController < ApplicationController
     render json: group.json
   end
 
-  # rubocop:enable Metrics/AbcSize
-
   # post /groups/:id/join
   def join
+    user = User.find_by(id: params[:user_id])
+    if user.nil?
+      render json: { "code": 404, "message": '該当するユーザーが存在しません。' }, status: :not_found
+      return
+    end
+    group = Group.find_by(id: params[:id])
+
+    if group.nil?
+      render json: { "code": 404, "message": '該当するグループが存在しません。' }, status: :not_found
+      return
+    end
+
+    if group.users.include?(user)
+      render json: { "code": 400, "message": 'すでにこのグループに参加しています。' }, status: :bad_request
+      return
+    end
+
+    puts params[:user_id]
+    puts @user.id
+
+    if @user.id == user.id then
+      if group.public
+        group.users.push(user)
+      else
+        render json: { "code": 403, "message": 'このグループには参加できません' }, status: :forbidden
+        return
+      end
+    else
+      if group.users.include?(@user)
+        group.users.push(user)
+      else
+        render json: { "code": 403, "message": 'このグループには参加できません' }, status: :forbidden
+        return
+      end
+    end
+    unless group.save
+      render json: { "code": 500, "message": 'グループに参加できませんでした。' }, status: :internal_server_error
+      return
+    end
+    render json: { "code": 200, "message": 'successful operation' }
   end
 
   # post /groups/:id/leave
   def leave
+    group = Group.find_by(id: params[:id])
+
+    if group.nil?
+      render json: { "code": 404, "message": '該当するグループが存在しません。' }, status: :not_found
+      return
+    end
+
+    unless group.users.include?(@user)
+      render json: { "code": 400, "message": 'このグループには参加していません' }, status:  :bad_request
+      return
+    end
+
+    group.users.delete(@user)
+
+    unless group.save
+      render json: { "code": 500, "message": 'このグループから脱退できませんでした' }, status: :internal_server_error
+      return
+    end
+    render json: { "code": 200, "message": 'successful operation' }
   end
 end
