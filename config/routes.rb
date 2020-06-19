@@ -9,6 +9,8 @@ Rails.application.routes.draw do
     get 'public/posts', to: 'posts#public_group', on: :member
     get 'posts', to: 'posts#group', on: :member
     post 'posts', to: 'posts#create', on: :member
+    post 'join', to: 'join', on: :member
+    post 'leave', to: 'leave', on: :member
   end
 
   resources :tags, only: [:index, :show, :create]
