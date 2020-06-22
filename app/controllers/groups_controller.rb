@@ -177,11 +177,18 @@ class GroupsController < ApplicationController
 
   # post /groups/:id/join
   def join
-    user = User.find_by(id: params[:user_id])
-    if user.nil?
-      render json: { "code": 404, "message": '該当するユーザーが存在しません。' }, status: :not_found
+    unless params[:questions].is_a?(Array)
+      render json: { "code": 400, "message": '質問事項は配列で入力してください。' }, status: :bad_request
       return
     end
+    
+    params[:answers].each do |answer|
+      if answer.include?('$')
+        render json: { "code": 400, "message": '回答に「$」を含めないでください。' }, status: :bad_request
+        return
+      end
+    end
+
     group = Group.find_by(id: params[:id])
 
     if group.nil?
@@ -194,21 +201,22 @@ class GroupsController < ApplicationController
       return
     end
 
-    if @user == user
-      if group.public
-        group.users.push(user)
-      else
-        render json: { "code": 403, "message": 'このグループには参加できません' }, status: :forbidden
-        return
-      end
-    elsif group.users.include?(@user)
-      group.users.push(user)
-    else
+    unless group.public
       render json: { "code": 403, "message": 'このグループには参加できません' }, status: :forbidden
       return
     end
 
-    unless group.save
+    groupUser = GroupUser.new
+    groupUser.answers = params[:answers].join('$')
+    groupUser.user = @user
+    groupUser.group = group
+
+    unless groupUser.valid?
+      render json: { "code": 400, "message": groupUser.errors.messages }, status: :bad_request
+      return
+    end
+
+    unless groupUser.save
       render json: { "code": 500, "message": 'グループに参加できませんでした。' }, status: :internal_server_error
       return
     end
