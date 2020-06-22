@@ -7,6 +7,7 @@ class Tag < ApplicationRecord
 
   has_many :group_tags, dependent: :destroy
   has_many :groups, through: :group_tags
+  accepts_nested_attributes_for :group_tags, allow_destroy: true
 
   validates :name, format: { with: %r{\A[^\.\#@/\\]+\z} }
   validate :same_hierarchy_same_name
