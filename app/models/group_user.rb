@@ -7,6 +7,6 @@ class GroupUser < ApplicationRecord
   validate :answers_count
 
   def answers_count
-    errors.add(:answers, '回答が不十分です。') unless group.questions.split('$').length == answers.split('$').length
+    errors.add(:answers, '回答が不十分です。') unless group.questions.count('$') == answers.count('$')
   end
 end

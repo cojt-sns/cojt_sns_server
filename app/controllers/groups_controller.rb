@@ -65,35 +65,40 @@ class GroupsController < ApplicationController
       end
     end
 
-    group = Group.new
+    ActiveRecord::Base.transaction do
 
-    params[:tags].each do |tag_id|
-      tag = Tag.find_by(id: tag_id)
-      if tag.nil?
-        render json: { "code": 400, "message": 'タグが存在しません' }, status: :bad_request
-        return
+      group = Group.new
+
+      params[:tags].each do |tag_id|
+        tag = Tag.find_by(id: tag_id)
+        if tag.nil?
+          render json: { "code": 400, "message": 'タグが存在しません' }, status: :bad_request
+          return
+        end
+        group.tags << tag
       end
-      group.tags << tag
+
+      group.questions = params[:questions].join('$')
+
+      group.twitter_traceability = params[:twitter_traceability] if params[:twitter_traceability]
+      group.introduction = params[:introduction] if params[:introduction]
+      group.public = params[:public] if params[:public]
+
+      group.save!
+
+      # ログインユーザをグループに追加
+      groupUser = GroupUser.new
+      groupUser.answers = params[:questions].length > 1 ? '$' * (params[:questions].length - 1) : ''
+      groupUser.user = @user
+      groupUser.group = group
+      groupUser.admin = true
+
+      groupUser.save!
+
+      render json: group.json
     end
-
-    group.questions = params[:questions].join('$')
-
-    group.twitter_traceability = params[:twitter_traceability] if params[:twitter_traceability]
-    group.introduction = params[:introduction] if params[:introduction]
-    group.public = params[:public] if params[:public]
-
-    unless group.valid?
-      render json: { "code": 400, "message": group.errors.messages }, status: :bad_request
-      return
-    end
-
-    # groupを作れなかった時のエラー
-    unless group.save
-      render json: { "code": 500, "message": 'グループを生成できませんでした。' }, status: :internal_server_error
-      return
-    end
-
-    render json: group.json
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { "code": 500, "message": e.record.errors.messages }, status: :internal_server_error
   end
 
   # get /groups/{id}
