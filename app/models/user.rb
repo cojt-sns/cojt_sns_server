@@ -5,7 +5,7 @@ class User < ApplicationRecord
   # rubocop:disable Rails/HasAndBelongsToMany
   has_and_belongs_to_many :tags, dependent: :destroy
   # rubocop:enable Rails/HasAndBelongsToMany
-  
+
   has_many :group_users, dependent: :destroy
   has_many :groups, through: :group_users
   accepts_nested_attributes_for :group_users, allow_destroy: true

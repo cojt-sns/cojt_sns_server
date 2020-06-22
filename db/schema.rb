@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_22_123318) do
+ActiveRecord::Schema.define(version: 2020_06_22_141707) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 2020_06_22_123318) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["group_id"], name: "index_group_tags_on_group_id"
+    t.index ["tag_id", "group_id"], name: "index_group_tags_on_tag_id_and_group_id", unique: true
     t.index ["tag_id"], name: "index_group_tags_on_tag_id"
   end
 
@@ -60,6 +61,7 @@ ActiveRecord::Schema.define(version: 2020_06_22_123318) do
     t.text "answers", null: false
     t.text "introduction"
     t.index ["group_id"], name: "index_group_users_on_group_id"
+    t.index ["user_id", "group_id"], name: "index_group_users_on_user_id_and_group_id", unique: true
     t.index ["user_id"], name: "index_group_users_on_user_id"
   end
 

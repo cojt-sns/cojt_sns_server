@@ -66,7 +66,6 @@ class GroupsController < ApplicationController
     end
 
     ActiveRecord::Base.transaction do
-
       group = Group.new
 
       params[:tags].each do |tag_id|
@@ -87,13 +86,13 @@ class GroupsController < ApplicationController
       group.save!
 
       # ログインユーザをグループに追加
-      groupUser = GroupUser.new
-      groupUser.answers = params[:questions].length > 1 ? '$' * (params[:questions].length - 1) : ''
-      groupUser.user = @user
-      groupUser.group = group
-      groupUser.admin = true
+      group_user = GroupUser.new
+      group_user.answers = params[:questions].length > 1 ? '$' * (params[:questions].length - 1) : ''
+      group_user.user = @user
+      group_user.group = group
+      group_user.admin = true
 
-      groupUser.save!
+      group_user.save!
 
       render json: group.json
     end
@@ -178,15 +177,13 @@ class GroupsController < ApplicationController
     render json: group.json
   end
 
-  # rubocop:enable Metrics/AbcSize
-
   # post /groups/:id/join
   def join
-    unless params[:questions].is_a?(Array)
-      render json: { "code": 400, "message": '質問事項は配列で入力してください。' }, status: :bad_request
+    unless params[:answers].is_a?(Array)
+      render json: { "code": 400, "message": '回答は配列で入力してください。' }, status: :bad_request
       return
     end
-    
+
     params[:answers].each do |answer|
       if answer.include?('$')
         render json: { "code": 400, "message": '回答に「$」を含めないでください。' }, status: :bad_request
@@ -211,23 +208,25 @@ class GroupsController < ApplicationController
       return
     end
 
-    groupUser = GroupUser.new
-    groupUser.answers = params[:answers].join('$')
-    groupUser.user = @user
-    groupUser.group = group
+    group_user = GroupUser.new
+    group_user.answers = params[:answers].join('$')
+    group_user.user = @user
+    group_user.group = group
 
-    unless groupUser.valid?
-      render json: { "code": 400, "message": groupUser.errors.messages }, status: :bad_request
+    unless group_user.valid?
+      render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
       return
     end
 
-    unless groupUser.save
+    unless group_user.save
       render json: { "code": 500, "message": 'グループに参加できませんでした。' }, status: :internal_server_error
       return
     end
 
     render json: { "code": 200, "message": 'successful operation' }
   end
+
+  # rubocop:enable Metrics/AbcSize
 
   # post /groups/:id/leave
   def leave
