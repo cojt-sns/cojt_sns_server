@@ -9,6 +9,7 @@ class Group < ApplicationRecord
 
   has_many :posts, dependent: :destroy
 
+  validates :tags, presence: true
   validate :same_tags
   validate :same_ancestor_tags
   validate :unique_tags
