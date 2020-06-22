@@ -56,7 +56,10 @@ class GroupsController < ApplicationController
     end
 
     params[:questions].each do |question|
-      if question.include?('$')
+      if question.empty?
+        render json: { "code": 400, "message": '質問が空です。' }, status: :bad_request
+        return
+      elsif question.include?('$')
         render json: { "code": 400, "message": '質問事項に「$」を含めないでください。' }, status: :bad_request
         return
       end
@@ -118,7 +121,10 @@ class GroupsController < ApplicationController
     end
 
     params[:questions]&.each do |question|
-      if question.include?('$')
+      if question.empty?
+        render json: { "code": 400, "message": '質問が空です。' }, status: :bad_request
+        return
+      elsif question.include?('$')
         render json: { "code": 400, "message": '質問事項に「$」を含めないでください。' }, status: :bad_request
         return
       end

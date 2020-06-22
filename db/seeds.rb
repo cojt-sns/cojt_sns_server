@@ -23,15 +23,15 @@ tag3.save
 tag4.save
 tag5.save
 
-group = Group.create(public: true, twitter_traceability: true, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag, tag2])
+group = Group.create(public: true, twitter_traceability: true, questions: 'スマブラのプレイ時間は?$入学した年は？', introduction: false, tags: [tag, tag2])
 
-group1 = Group.create(public: true, twitter_traceability: true, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag1])
+group1 = Group.create(public: true, twitter_traceability: true, questions: 'スマブラのプレイ時間は?', introduction: false, tags: [tag1])
 
-group2 = Group.create(public: true, twitter_traceability: true, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag, tag3])
+group2 = Group.create(public: true, twitter_traceability: true, questions: 'スマブラのプレイ時間は?$入学した年は？', introduction: false, tags: [tag, tag3])
 
-group3 = Group.create(public: false, twitter_traceability: false, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag, tag4])
+group3 = Group.create(public: false, twitter_traceability: false, questions: 'スマブラのプレイ時間は?$入学した年は？', introduction: false, tags: [tag, tag4])
 
-group4 = Group.create(public: false, twitter_traceability: false, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag, tag5])
+group4 = Group.create(public: false, twitter_traceability: false, questions: 'スマブラのプレイ時間は?$入学した年は？$好きなラーメンの店は？', introduction: false, tags: [tag, tag5])
 
 user.groups << group
 user.groups << group1
