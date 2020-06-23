@@ -79,9 +79,9 @@ class GroupsController < ApplicationController
 
       group.questions = params[:questions].join('$')
 
-      group.twitter_traceability = params[:twitter_traceability] if params[:twitter_traceability]
-      group.introduction = params[:introduction] if params[:introduction]
-      group.public = params[:public] if params[:public]
+      group.twitter_traceability = params[:twitter_traceability] unless params[:twitter_traceability].nil?
+      group.introduction = params[:introduction] unless params[:introduction].nil?
+      group.public = params[:public] unless params[:public].nil?
 
       group.save!
 
@@ -146,7 +146,7 @@ class GroupsController < ApplicationController
       render json: { "code": 403, "message": 'メンバーでないため、更新できませんでした。' }, status: :forbidden
       return
     end
-    
+
     if params[:questions]
       unless params[:questions].is_a?(Array)
         render json: { "code": 400, "message": '質問事項は配列で入力してください。' }, status: :bad_request
@@ -160,10 +160,10 @@ class GroupsController < ApplicationController
         end
       end
     end
-    group.questions = params[:questions].join('$') if params[:questions].present?
-    group.twitter_traceability = params[:twitter_traceability] if params[:twitter_traceability].present?
-    group.introduction = params[:introduction] if params[:introduction].present?
-    group.public = params[:public] if params[:public].present?
+    group.questions = params[:questions].join('$') if params[:questions]
+    group.twitter_traceability = params[:twitter_traceability] unless params[:twitter_traceability].nil?
+    group.introduction = params[:introduction] unless params[:introduction].nil?
+    group.public = params[:public] unless params[:public].nil?
 
     unless group.valid?
       render json: { "code": 400, "message": group.errors.messages }, status: :bad_request
