@@ -416,7 +416,7 @@ paths:
           schema:
             type: "integer"
       requestBody:
-        description: "Updated Group object"
+        description: "Updated Group object　(タグ情報はなし)"
         required: true
         content:
           application/json:
