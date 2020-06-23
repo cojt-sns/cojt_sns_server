@@ -23,24 +23,22 @@ tag3.save
 tag4.save
 tag5.save
 
-group = Group.create(public: true, twitter_traceability: true, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag, tag2])
+group = Group.create(public: true, twitter_traceability: true, questions: 'スマブラのプレイ時間は?$入学した年は？', introduction: false, tags: [tag, tag2])
 
-group1 = Group.create(public: true, twitter_traceability: true, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag1])
+group1 = Group.create(public: true, twitter_traceability: true, questions: 'スマブラのプレイ時間は?', introduction: false, tags: [tag1])
 
-group2 = Group.create(public: true, twitter_traceability: true, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag, tag3])
+group2 = Group.create(public: true, twitter_traceability: true, questions: 'スマブラのプレイ時間は?$入学した年は？', introduction: false, tags: [tag, tag3])
 
-group3 = Group.create(public: false, twitter_traceability: false, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag, tag4])
+group3 = Group.create(public: false, twitter_traceability: false, questions: 'スマブラのプレイ時間は?$入学した年は？', introduction: false, tags: [tag, tag4])
 
-group4 = Group.create(public: false, twitter_traceability: false, questions: '["スマブラのプレイ時間は?"]', introduction: false, tags: [tag, tag5])
+group4 = Group.create(public: false, twitter_traceability: false, questions: 'スマブラのプレイ時間は?$入学した年は？$好きなラーメンの店は？', introduction: false, tags: [tag, tag5])
 
-user.groups << group
-user.groups << group1
+GroupUser.create(user: user, group: group, answers: '100h$2018')
+GroupUser.create(user: user, group: group1, answers: '100h')
 
-user2.groups << group2
-user2.groups << group3
-user2.groups << group4
-
-user.save!
+GroupUser.create(user: user2, group: group2, answers: '150h$2020')
+GroupUser.create(user: user2, group: group3, answers: '150h$2020')
+GroupUser.create(user: user2, group: group4, answers: '150h$2020$むじゃき')
 
 post1 = Post.create(content: "post1", user_id: user.id, group_id: group.id, created_at: Time.now + 1.hour)
 post2 = Post.create(content: "post2", user_id: user.id, group_id: group.id, created_at: Time.now + 2.hour)

@@ -445,9 +445,7 @@ paths:
         - "Group"
       summary: "グループに参加する"
       description: |
-        ログインユーザと参加するユーザが同じ時、かつパブリックグループなら参加可能。
-        また、ログインユーザと参加するユーザが違うとき、ログインユーザが対象となるグループに属しているなら、
-        全グループ参加可能
+        ログインユーザを対象とする。
       operationId: "joinGroup"
       security:
         - Bearer: []
@@ -465,12 +463,18 @@ paths:
             schema:
               type: "object"
               required:
-                - user_id
+                - answers
               properties:
-                user_id:
-                  type: "integer"
-                  example: 1
-                  description: ユーザーID
+                answers:
+                  type: "array"
+                  description: 回答
+                  items:
+                    type: "string"
+                    example: "100時間"
+                introduction:
+                  type: "string"
+                  description: 自己紹介
+                  example: "世界ランカー"
       responses:
         "200":
           description: "successful operation "

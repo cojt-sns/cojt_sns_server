@@ -56,41 +56,48 @@ class GroupsController < ApplicationController
     end
 
     params[:questions].each do |question|
-      if question.include?('$')
+      if question.empty?
+        render json: { "code": 400, "message": '質問が空です。' }, status: :bad_request
+        return
+      elsif question.include?('$')
         render json: { "code": 400, "message": '質問事項に「$」を含めないでください。' }, status: :bad_request
         return
       end
     end
 
-    group = Group.new
+    ActiveRecord::Base.transaction do
+      group = Group.new
 
-    params[:tags].each do |tag_id|
-      tag = Tag.find_by(id: tag_id)
-      if tag.nil?
-        render json: { "code": 400, "message": 'タグが存在しません' }, status: :bad_request
-        return
+      params[:tags].each do |tag_id|
+        tag = Tag.find_by(id: tag_id)
+        if tag.nil?
+          render json: { "code": 400, "message": 'タグが存在しません' }, status: :bad_request
+          return
+        end
+        group.tags << tag
       end
-      group.tags << tag
+
+      group.questions = params[:questions].join('$')
+
+      group.twitter_traceability = params[:twitter_traceability] if params[:twitter_traceability]
+      group.introduction = params[:introduction] if params[:introduction]
+      group.public = params[:public] if params[:public]
+
+      group.save!
+
+      # ログインユーザをグループに追加
+      group_user = GroupUser.new
+      group_user.answers = params[:questions].length > 1 ? '$' * (params[:questions].length - 1) : ''
+      group_user.user = @user
+      group_user.group = group
+      group_user.admin = true
+
+      group_user.save!
+
+      render json: group.json
     end
-
-    group.questions = params[:questions].join('$')
-
-    group.twitter_traceability = params[:twitter_traceability] if params[:twitter_traceability].present?
-    group.introduction = params[:introduction] if params[:introduction].present?
-    group.public = params[:isPublic] if params[:isPublic].present?
-
-    unless group.valid?
-      render json: { "code": 400, "message": group.errors.messages }, status: :bad_request
-      return
-    end
-
-    # groupを作れなかった時のエラー
-    unless group.save
-      render json: { "code": 500, "message": 'グループを生成できませんでした。' }, status: :internal_server_error
-      return
-    end
-
-    render json: group.json
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { "code": 500, "message": e.record.errors.messages }, status: :internal_server_error
   end
 
   # get /groups/{id}
@@ -112,6 +119,21 @@ class GroupsController < ApplicationController
 
   # put /groups/{id}
   def update
+    unless params[:questions].is_a?(Array)
+      render json: { "code": 400, "message": '質問事項は配列で入力してください。' }, status: :bad_request
+      return
+    end
+
+    params[:questions]&.each do |question|
+      if question.empty?
+        render json: { "code": 400, "message": '質問が空です。' }, status: :bad_request
+        return
+      elsif question.include?('$')
+        render json: { "code": 400, "message": '質問事項に「$」を含めないでください。' }, status: :bad_request
+        return
+      end
+    end
+
     group = Group.find_by(id: params[:id])
 
     # グループが存在しない場合のエラー
@@ -124,18 +146,7 @@ class GroupsController < ApplicationController
       render json: { "code": 403, "message": 'メンバーでないため、更新できませんでした。' }, status: :forbidden
       return
     end
-    # タグは編集できない
-    # if params[:tags]
-    #   group.tags = []
-    #   params[:tags].each do |tag_id|
-    #     tag = Tag.find_by(id: tag_id)
-    #     if tag.nil?
-    #       render json: { "code": 400, "message": 'タグが存在しません' }, status: :bad_request
-    #       return
-    #     end
-    #     group.tags << tag
-    #   end
-    # end
+    
     if params[:questions]
       unless params[:questions].is_a?(Array)
         render json: { "code": 400, "message": '質問事項は配列で入力してください。' }, status: :bad_request
@@ -152,7 +163,7 @@ class GroupsController < ApplicationController
     group.questions = params[:questions].join('$') if params[:questions].present?
     group.twitter_traceability = params[:twitter_traceability] if params[:twitter_traceability].present?
     group.introduction = params[:introduction] if params[:introduction].present?
-    group.public = params[:isPublic] if params[:isPublic].present?
+    group.public = params[:public] if params[:public].present?
 
     unless group.valid?
       render json: { "code": 400, "message": group.errors.messages }, status: :bad_request
@@ -167,15 +178,20 @@ class GroupsController < ApplicationController
     render json: group.json
   end
 
-  # rubocop:enable Metrics/AbcSize
-
   # post /groups/:id/join
   def join
-    user = User.find_by(id: params[:user_id])
-    if user.nil?
-      render json: { "code": 404, "message": '該当するユーザーが存在しません。' }, status: :not_found
+    unless params[:answers].is_a?(Array)
+      render json: { "code": 400, "message": '回答は配列で入力してください。' }, status: :bad_request
       return
     end
+
+    params[:answers].each do |answer|
+      if answer.include?('$')
+        render json: { "code": 400, "message": '回答に「$」を含めないでください。' }, status: :bad_request
+        return
+      end
+    end
+
     group = Group.find_by(id: params[:id])
 
     if group.nil?
@@ -188,27 +204,30 @@ class GroupsController < ApplicationController
       return
     end
 
-    if @user == user
-      if group.public
-        group.users.push(user)
-      else
-        render json: { "code": 403, "message": 'このグループには参加できません' }, status: :forbidden
-        return
-      end
-    elsif group.users.include?(@user)
-      group.users.push(user)
-    else
+    unless group.public
       render json: { "code": 403, "message": 'このグループには参加できません' }, status: :forbidden
       return
     end
 
-    unless group.save
+    group_user = GroupUser.new
+    group_user.answers = params[:answers].join('$')
+    group_user.user = @user
+    group_user.group = group
+
+    unless group_user.valid?
+      render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
+      return
+    end
+
+    unless group_user.save
       render json: { "code": 500, "message": 'グループに参加できませんでした。' }, status: :internal_server_error
       return
     end
 
     render json: { "code": 200, "message": 'successful operation' }
   end
+
+  # rubocop:enable Metrics/AbcSize
 
   # post /groups/:id/leave
   def leave
