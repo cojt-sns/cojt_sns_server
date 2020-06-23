@@ -416,7 +416,7 @@ paths:
           schema:
             type: "integer"
       requestBody:
-        description: "Updated Group object"
+        description: "Updated Group object　(タグ情報はなし)"
         required: true
         content:
           application/json:
@@ -993,6 +993,7 @@ components:
       type: "object"
       required:
         - id
+        - public
         - questions
         - tags
       properties:
@@ -1000,6 +1001,10 @@ components:
           type: "integer"
           example: 1
           readOnly: true
+        public:
+          type: "boolean"
+          description: "グループの公開設定"
+          example: true
         twitter_traceability:
           type: "boolean"
           description: "ツイッターから見れるかどうか?"
