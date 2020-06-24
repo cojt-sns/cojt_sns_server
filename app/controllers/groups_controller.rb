@@ -209,10 +209,7 @@ class GroupsController < ApplicationController
       return
     end
 
-    group_user = GroupUser.new
-    group_user.answers = params[:answers].join('$')
-    group_user.user = @user
-    group_user.group = group
+    group_user = GroupUser.new(group_user_params)
 
     unless group_user.valid?
       render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
@@ -250,5 +247,11 @@ class GroupsController < ApplicationController
       return
     end
     render json: { "code": 200, "message": 'successful operation' }
+  end
+
+  private
+
+  def group_user_params
+    params.permit(:name, :answers, :introduction)
   end
 end

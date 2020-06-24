@@ -579,7 +579,7 @@ paths:
           description: "認証不正"
         "500":
           description: "Internal Server Error"
-  /groups/{group_id}/public/posts:
+  /public/groups/{group_id}/posts:
     get:
       tags:
         - "Post"
@@ -786,11 +786,11 @@ paths:
           description: "グループが存在しません。"
         "500":
           description: "Internal Server Error"
-  /groups/{group_id}/public/users:
+  /public/groups/{group_id}/group_users:
     get:
       tags:
-        - "User"
         - "Group"
+        - "GroupUser"
       summary: "パブリックグループのメンバー情報一覧を取得する"
       operationId: "getPublicGroupUsers"
       parameters:
@@ -817,23 +817,16 @@ paths:
           description: "グループが存在しません。"
         "500":
           description: "Internal Server Error"
-  /groups/{group_id}/users/{user_id}:
+  /group_users/{id}:
     get:
       tags:
-        - "User"
-        - "Group"
+        - "GroupUser"
       security:
         - Bearer: []
       summary: "グループのメンバー情報を取得する"
       operationId: "getGroupUser"
       parameters:
-        - name: "group_id"
-          in: "path"
-          description: "GroupのID"
-          required: true
-          schema:
-            type: "integer"
-        - name: "user_id"
+        - name: "id"
           in: "path"
           description: "ユーザーのエイリアスID"
           required: true
@@ -853,25 +846,18 @@ paths:
         "403":
           description: "グループへの権限がありません。"
         "404":
-          description: "グループが存在しません。"
+          description: "グループまたはユーザが存在しません。または、グループにユーザが参加していない。"
         "500":
           description: "Internal Server Error"
     put:
       tags:
-        - "User"
-        - "Group"
+        - "GroupUser"
       security:
         - Bearer: []
       summary: "グループのメンバー情報を更新する"
       operationId: "postGroupUser"
       parameters:
-        - name: "group_id"
-          in: "path"
-          description: "GroupのID"
-          required: true
-          schema:
-            type: "integer"
-        - name: "user_id"
+        - name: "id"
           in: "path"
           description: "ユーザーのエイリアスID"
           required: true
@@ -897,24 +883,17 @@ paths:
         "403":
           description: "グループへの権限がありません。"
         "404":
-          description: "グループが存在しません。"
+          description: "グループまたはユーザが存在しません。または、グループにユーザが参加していない。"
         "500":
           description: "Internal Server Error"
-  /groups/{group_id}/public/users/{user_id}:
+  /public/group_users/{id}:
     get:
       tags:
-        - "User"
-        - "Group"
+        - "GroupUser"
       summary: "パブリックグループのメンバー情報を取得する"
       operationId: "getPublicGroupUser"
       parameters:
-        - name: "group_id"
-          in: "path"
-          description: "GroupのID"
-          required: true
-          schema:
-            type: "integer"
-        - name: "user_id"
+        - name: "id"
           in: "path"
           description: "ユーザーのエイリアスID"
           required: true
@@ -932,7 +911,7 @@ paths:
         "403":
           description: "グループへの権限がありません。"
         "404":
-          description: "グループが存在しません。"
+          description: "グループまたはユーザが存在しません。または、グループにユーザが参加していない。"
         "500":
           description: "Internal Server Error"
   /posts/{id}:
