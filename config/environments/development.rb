@@ -53,4 +53,7 @@ Rails.application.configure do
   config.action_cable.url = 'ws://localhost:4000/cable'
   # config.action_cable.allowed_request_origins = [ /http:\/\/.*/ ]
   config.action_cable.disable_request_forgery_protection = true
+
+  config.cache_classes = false
+  config.reload_classes_only_on_change = false
 end
