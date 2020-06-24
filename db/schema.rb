@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_22_141707) do
+ActiveRecord::Schema.define(version: 2020_06_24_052451) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -67,7 +67,7 @@ ActiveRecord::Schema.define(version: 2020_06_22_141707) do
 
   create_table "groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.boolean "public", default: true, null: false
-    t.boolean "twitter_traceability", default: false, null: false
+    t.boolean "visible_profile", default: false, null: false
     t.text "questions"
     t.boolean "introduction", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
