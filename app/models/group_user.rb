@@ -7,6 +7,17 @@ class GroupUser < ApplicationRecord
 
   validate :answers_count
 
+  def json
+    {
+      "name" : name,
+      "answers": answers.split('$'),
+      "introduction": introduction,
+      "group_id": group_id,
+      "user_id": group.visible_profile ? user_id : nil
+      "image": user.image_url
+    }
+  end
+
   def answers_count
     errors.add(:answers, '回答が不十分です。') unless group.questions.count('$') == answers.count('$')
   end
