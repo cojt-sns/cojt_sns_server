@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_24_052451) do
+ActiveRecord::Schema.define(version: 2020_06_24_065817) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(version: 2020_06_24_052451) do
     t.boolean "admin", default: false, null: false
     t.text "answers", null: false
     t.text "introduction"
+    t.string "name", null: false
     t.index ["group_id"], name: "index_group_users_on_group_id"
     t.index ["user_id", "group_id"], name: "index_group_users_on_user_id_and_group_id", unique: true
     t.index ["user_id"], name: "index_group_users_on_user_id"
