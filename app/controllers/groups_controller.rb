@@ -79,7 +79,7 @@ class GroupsController < ApplicationController
 
       group.questions = params[:questions].join('$')
 
-      group.twitter_traceability = params[:twitter_traceability] unless params[:twitter_traceability].nil?
+      group.visible_profile = params[:visible_profile] unless params[:visible_profile].nil?
       group.introduction = params[:introduction] unless params[:introduction].nil?
       group.public = params[:public] unless params[:public].nil?
 
@@ -161,7 +161,7 @@ class GroupsController < ApplicationController
       end
     end
     group.questions = params[:questions].join('$') if params[:questions]
-    group.twitter_traceability = params[:twitter_traceability] unless params[:twitter_traceability].nil?
+    group.visible_profile = params[:visible_profile] unless params[:visible_profile].nil?
     group.introduction = params[:introduction] unless params[:introduction].nil?
     group.public = params[:public] unless params[:public].nil?
 
