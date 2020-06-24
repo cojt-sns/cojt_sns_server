@@ -64,6 +64,28 @@ paths:
           description: "認証不正"
         "500":
           description: "Internal Server Error"
+  /auth/user:
+    get:
+      tags:
+        - "Auth"
+      summary: "ログインユーザー情報の取得"
+      operationId: "getLoginUser"
+      security:
+        - Bearer: []
+      responses:
+        "200":
+          description: "successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: "Invalid username supplied"
+        "401":
+          description: "認証不正"
+        "500":
+          description: "Internal Server Error"
+
   /users:
     post:
       tags:
@@ -461,20 +483,7 @@ paths:
         content:
           application/json:
             schema:
-              type: "object"
-              required:
-                - answers
-              properties:
-                answers:
-                  type: "array"
-                  description: 回答
-                  items:
-                    type: "string"
-                    example: "100時間"
-                introduction:
-                  type: "string"
-                  description: 自己紹介
-                  example: "世界ランカー"
+              $ref: "#/components/schemas/AliasUser"
       responses:
         "200":
           description: "successful operation "
@@ -742,6 +751,190 @@ paths:
           description: "グループに投稿する権限がない"
         "500":
           description: "Internal Server Error"
+  /groups/{group_id}/users:
+    get:
+      tags:
+        - "User"
+        - "Group"
+      security:
+        - Bearer: []
+      summary: "グループのメンバー情報一覧を取得する"
+      operationId: "getGroupUsers"
+      parameters:
+        - name: "group_id"
+          in: "path"
+          description: "GroupのID"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation "
+          content:
+            "application/json":
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/AliasUser"
+        "400":
+          description: "リクエスト不正"
+        "401":
+          description: "認証不正"
+        "403":
+          description: "グループへの権限がありません。"
+        "404":
+          description: "グループが存在しません。"
+        "500":
+          description: "Internal Server Error"
+  /groups/{group_id}/public/users:
+    get:
+      tags:
+        - "User"
+        - "Group"
+      summary: "パブリックグループのメンバー情報一覧を取得する"
+      operationId: "getPublicGroupUsers"
+      parameters:
+        - name: "group_id"
+          in: "path"
+          description: "GroupのID"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation "
+          content:
+            "application/json":
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/AliasUser"
+        "400":
+          description: "リクエスト不正"
+        "403":
+          description: "グループへの権限がありません。"
+        "404":
+          description: "グループが存在しません。"
+        "500":
+          description: "Internal Server Error"
+  /groups/{group_id}/users/{user_id}:
+    get:
+      tags:
+        - "User"
+        - "Group"
+      security:
+        - Bearer: []
+      summary: "グループのメンバー情報を取得する"
+      operationId: "getGroupUser"
+      parameters:
+        - name: "group_id"
+          in: "path"
+          description: "GroupのID"
+          required: true
+          schema:
+            type: "integer"
+        - name: "user_id"
+          in: "path"
+          description: "ユーザーのエイリアスID"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation "
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/AliasUser"
+        "400":
+          description: "リクエスト不正"
+        "401":
+          description: "認証不正"
+        "403":
+          description: "グループへの権限がありません。"
+        "404":
+          description: "グループが存在しません。"
+        "500":
+          description: "Internal Server Error"
+    put:
+      tags:
+        - "User"
+        - "Group"
+      security:
+        - Bearer: []
+      summary: "グループのメンバー情報を更新する"
+      operationId: "postGroupUser"
+      parameters:
+        - name: "group_id"
+          in: "path"
+          description: "GroupのID"
+          required: true
+          schema:
+            type: "integer"
+        - name: "user_id"
+          in: "path"
+          description: "ユーザーのエイリアスID"
+          required: true
+          schema:
+            type: "integer"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AliasUser"
+      responses:
+        "200":
+          description: "successful operation "
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/AliasUser"
+        "400":
+          description: "リクエスト不正"
+        "401":
+          description: "認証不正"
+        "403":
+          description: "グループへの権限がありません。"
+        "404":
+          description: "グループが存在しません。"
+        "500":
+          description: "Internal Server Error"
+  /groups/{group_id}/public/users/{user_id}:
+    get:
+      tags:
+        - "User"
+        - "Group"
+      summary: "パブリックグループのメンバー情報を取得する"
+      operationId: "getPublicGroupUser"
+      parameters:
+        - name: "group_id"
+          in: "path"
+          description: "GroupのID"
+          required: true
+          schema:
+            type: "integer"
+        - name: "user_id"
+          in: "path"
+          description: "ユーザーのエイリアスID"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation "
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/AliasUser"
+        "400":
+          description: "リクエスト不正"
+        "403":
+          description: "グループへの権限がありません。"
+        "404":
+          description: "グループが存在しません。"
+        "500":
+          description: "Internal Server Error"
   /posts/{id}:
     get:
       tags:
@@ -1005,7 +1198,7 @@ components:
           type: "boolean"
           description: "グループの公開設定"
           example: true
-        twitter_traceability:
+        visible_profile:
           type: "boolean"
           description: "ツイッターから見れるかどうか?"
           default: false
@@ -1029,6 +1222,37 @@ components:
       description: "グループの検索結果"
       items:
         $ref: "#/components/schemas/Group"
+    AliasUser:
+      type: "object"
+      required:
+        - id
+        - name
+        - answers
+        - introduction
+      properties:
+        id:
+          type: "integer"
+          example: 1
+          readOnly: true
+        name:
+          type: "string"
+          description: "ユーザー別名"
+          example: "ushu"
+        introduction:
+          type: "string"
+          description: "自己紹介"
+          example: "スマブラ世界ランカー"
+        answers:
+          type: "array"
+          description: "質問に対する答え"
+          items:
+            type: "string"
+            example: "100h"
+        icon_url:
+          type: "string"
+          description: "プロフィール画像のurl"
+          readOnly: true
+          example: "/neko.png"
     Post:
       type: "object"
       required:
@@ -1044,10 +1268,10 @@ components:
           type: "string"
           description: "内容"
           example: "こんにちは！"
-        user_id:
+        alias_id:
           type: "integer"
           example: 1
-          description: "ユーザーのID"
+          description: "グループ-ユーザーテーブルのid"
           readOnly: true
         group_id:
           type: "integer"
