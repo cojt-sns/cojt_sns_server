@@ -483,7 +483,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AliasUser"
+              $ref: "#/components/schemas/GroupUser"
       responses:
         "200":
           description: "successful operation "
@@ -775,7 +775,7 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/AliasUser"
+                  $ref: "#/components/schemas/GroupUser"
         "400":
           description: "リクエスト不正"
         "401":
@@ -808,7 +808,7 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/AliasUser"
+                  $ref: "#/components/schemas/GroupUser"
         "400":
           description: "リクエスト不正"
         "403":
@@ -845,7 +845,7 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/AliasUser"
+                $ref: "#/components/schemas/GroupUser"
         "400":
           description: "リクエスト不正"
         "401":
@@ -882,14 +882,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AliasUser"
+              $ref: "#/components/schemas/GroupUser"
       responses:
         "200":
           description: "successful operation "
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/AliasUser"
+                $ref: "#/components/schemas/GroupUser"
         "400":
           description: "リクエスト不正"
         "401":
@@ -926,7 +926,7 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/AliasUser"
+                $ref: "#/components/schemas/GroupUser"
         "400":
           description: "リクエスト不正"
         "403":
@@ -1222,7 +1222,7 @@ components:
       description: "グループの検索結果"
       items:
         $ref: "#/components/schemas/Group"
-    AliasUser:
+    GroupUser:
       type: "object"
       required:
         - id
@@ -1268,7 +1268,7 @@ components:
           type: "string"
           description: "内容"
           example: "こんにちは！"
-        alias_id:
+        group_user_id:
           type: "integer"
           example: 1
           description: "グループ-ユーザーテーブルのid"

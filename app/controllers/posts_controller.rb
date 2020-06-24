@@ -172,7 +172,7 @@ class PostsController < ApplicationController
          .created_day_range(until_day: search_params['until'], since: search_params['since'])
          .created_time_range(until_timestamp: search_params['until_timestamp'],
                              since_timestamp: search_params['since_timestamp'])
-         .from_user(search_params['from'])
+         .from_group_user(search_params['from'])
          .limit(search_params['max'])
   end
 end

@@ -1,12 +1,16 @@
 class Post < ApplicationRecord
   belongs_to :user
-  belongs_to :group
+  belongs_to :group_user
+
+  def user
+    group_user.user
+  end
 
   def json
     {
       "id": id,
       "content": content,
-      "user_id": user_id,
+      "group_user_id": group_user_id,
       "group_id": group_id,
       "created_at": created_at
     }
@@ -16,8 +20,8 @@ class Post < ApplicationRecord
     where('content LIKE ?', "%#{value}%") if value.present?
   }
 
-  scope :from_user, ->(from_user_id) {
-    where(user_id: from_user_id) if from_user_id.present?
+  scope :from_group_user, ->(from_group_user_id) {
+    where(user_id: from_group_user_id) if from_group_user_id.present?
   }
 
   #
