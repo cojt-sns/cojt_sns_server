@@ -10,11 +10,11 @@ Rails.application.routes.draw do
     post 'posts', to: 'posts#create', on: :member
     post 'join', to: 'join', on: :member
     post 'leave', to: 'leave', on: :member
-    get 'group_users', to: 'group_user#group', on: :member
-    
+    get 'group_users', to: 'group_users#group', on: :member
+    put 'group_users', to: 'group_users#update', on: :member
     scope :public do
       get 'posts', to: 'public/posts#group', on: :member
-      get 'group_users', to: 'public/group_user#group', on: :member
+      get 'group_users', to: 'public/group_users#group', on: :member
     end
   end
 
