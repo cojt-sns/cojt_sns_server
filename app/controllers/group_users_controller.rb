@@ -23,6 +23,8 @@ class GroupUsersController < ApplicationController
     render json: group_user.json
   end
 
+  # rubocop:disable Metrics/AbcSize
+
   # put /group_users/:id
   def update
     if params[:id].nil? || params[:id] =~ /[^0-9]+/
@@ -35,31 +37,29 @@ class GroupUsersController < ApplicationController
       return
     end
 
-    if group_user.user_id != @user.id
-      render json: { "code": 403, "message": '不正なアクセスです。本人でないと、プロフィールを編集できません。' }, status: :forbidden
+    if group_user.user != @user
+      render json: { "code": 403, "message": '不正なアクセスです。ログインユーザーでないと、プロフィールを編集できません。' }, status: :forbidden
       return
     end
 
-    if params[:answers]
-      unless params[:answers].is_a?(Array)
-        render json: { "code": 400, "message": '回答は配列で入力してください。' }, status: :bad_request
+    unless params[:answers].is_a?(Array)
+      render json: { "code": 400, "message": '回答は配列で入力してください。' }, status: :bad_request
+      return
+    end
+
+    params[:answers]&.each do |answer|
+      if answer.include?('$')
+        render json: { "code": 400, "message": '回答に「$」を含めないでください。' }, status: :bad_request
         return
       end
-
-      params[:answers]&.each do |answer|
-        if answer.include?('$')
-          render json: { "code": 400, "message": '回答に「$」を含めないでください。' }, status: :bad_request
-          return
-        end
-      end
     end
+
     group_user.answers = params[:answers].join('$') if params[:answers]
     group_user.name = params[:name] unless params[:name].nil?
     group_user.introduction = params[:introduction] unless params[:introduction].nil?
-    # group_user.image = params[:image] unless params[:image].nil?
 
     unless group_user.valid?
-      render json: { "code": 400, "message": '入力データが不適切です。' }, status: :bad_request
+      render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
       return
     end
 
@@ -71,19 +71,22 @@ class GroupUsersController < ApplicationController
     render json: group_user.json
   end
 
+  # rubocop:enable Metrics/AbcSize
+
   # get /groups/:id/group_users
   def group
     if params[:id].nil? || params[:id] =~ /[^0-9]+/
       render json: { code: 400, message: 'Bad Request' }, status: :bad_request
       return
     end
+
     group = Group.find_by(id: params[:id])
     if group.nil?
       render json: { code: 404, message: '存在しないグループです' }, status: :not_found
       return
     end
-    render json: group.users.map(&:json)
-    # render json: group.group_users.map(&:json)
+
+    render json: group.group_users.map(&:json)
   end
 
   private

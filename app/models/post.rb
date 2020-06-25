@@ -2,9 +2,7 @@ class Post < ApplicationRecord
   belongs_to :group
   belongs_to :group_user
 
-  def user
-    group_user.user
-  end
+  delegate :user, to: :group_user
 
   def json
     {
