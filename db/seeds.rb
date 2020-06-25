@@ -23,26 +23,26 @@ tag3.save
 tag4.save
 tag5.save
 
-group = Group.create(public: true, twitter_traceability: true, questions: 'スマブラのプレイ時間は?$入学した年は？', introduction: false, tags: [tag, tag2])
+group = Group.create(public: true, visible_profile: true, questions: 'スマブラのプレイ時間は?$入学した年は？', introduction: false, tags: [tag, tag2])
 
-group1 = Group.create(public: true, twitter_traceability: true, questions: 'スマブラのプレイ時間は?', introduction: false, tags: [tag1])
+group1 = Group.create(public: true, visible_profile: true, questions: 'スマブラのプレイ時間は?', introduction: false, tags: [tag1])
 
-group2 = Group.create(public: true, twitter_traceability: true, questions: 'スマブラのプレイ時間は?$入学した年は？', introduction: false, tags: [tag, tag3])
+group2 = Group.create(public: true, visible_profile: true, questions: 'スマブラのプレイ時間は?$入学した年は？', introduction: false, tags: [tag, tag3])
 
-group3 = Group.create(public: false, twitter_traceability: false, questions: 'スマブラのプレイ時間は?$入学した年は？', introduction: false, tags: [tag, tag4])
+group3 = Group.create(public: false, visible_profile: false, questions: 'スマブラのプレイ時間は?$入学した年は？', introduction: false, tags: [tag, tag4])
 
-group4 = Group.create(public: false, twitter_traceability: false, questions: 'スマブラのプレイ時間は?$入学した年は？$好きなラーメンの店は？', introduction: false, tags: [tag, tag5])
+group4 = Group.create(public: false, visible_profile: false, questions: 'スマブラのプレイ時間は?$入学した年は？$好きなラーメンの店は？', introduction: false, tags: [tag, tag5])
 
-GroupUser.create(user: user, group: group, answers: '100h$2018')
-GroupUser.create(user: user, group: group1, answers: '100h')
+group_user1 = GroupUser.create(name: 'tset1-1', user: user, group: group, answers: '100h$2018')
+group_user2 = GroupUser.create(name: 'tset1-2', user: user, group: group1, answers: '100h')
 
-GroupUser.create(user: user2, group: group2, answers: '150h$2020')
-GroupUser.create(user: user2, group: group3, answers: '150h$2020')
-GroupUser.create(user: user2, group: group4, answers: '150h$2020$むじゃき')
+group_user3 = GroupUser.create(name: 'tset2-1', user: user2, group: group2, answers: '150h$2020')
+group_user4 = GroupUser.create(name: 'tset2-2', user: user2, group: group3, answers: '150h$2020')
+group_user5 = GroupUser.create(name: 'tset2-3', user: user2, group: group4, answers: '150h$2020$むじゃき')
 
-post1 = Post.create(content: "post1", user_id: user.id, group_id: group.id, created_at: Time.now + 1.hour)
-post2 = Post.create(content: "post2", user_id: user.id, group_id: group.id, created_at: Time.now + 2.hour)
-post3 = Post.create(content: "post3", user_id: user.id, group_id: group1.id, created_at: Time.now + 3.hour)
-post4 = Post.create(content: "post4", user_id: user.id, group_id: group1.id, created_at: Time.now + 4.hour)
-post5 = Post.create(content: "post5", user_id: user.id, group_id: group1.id, created_at: Time.now + 1.day)
-post = Post.create(content: "こんにちは！", group: group, user: user)
+post1 = Post.create(content: "post1", group_user: group_user1, group_id: group.id, created_at: Time.now + 1.hour)
+post2 = Post.create(content: "post2", group_user: group_user1, group_id: group.id, created_at: Time.now + 2.hour)
+post3 = Post.create(content: "post3", group_user: group_user2, group_id: group1.id, created_at: Time.now + 3.hour)
+post4 = Post.create(content: "post4", group_user: group_user2, group_id: group1.id, created_at: Time.now + 4.hour)
+post5 = Post.create(content: "post5", group_user: group_user3, group_id: group2.id, created_at: Time.now + 1.day)
+post = Post.create(content: "こんにちは！", group: group, group_user: group_user1)

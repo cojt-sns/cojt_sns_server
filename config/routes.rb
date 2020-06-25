@@ -6,11 +6,22 @@ Rails.application.routes.draw do
   get 'auth/user'
   
   resources :groups, only: [:index, :create, :show, :update] do
-    get 'public/posts', to: 'posts#public_group', on: :member
     get 'posts', to: 'posts#group', on: :member
     post 'posts', to: 'posts#create', on: :member
     post 'join', to: 'join', on: :member
     post 'leave', to: 'leave', on: :member
+    get 'group_users', to: 'group_users#group', on: :member
+    put 'group_users', to: 'group_users#update', on: :member
+    scope :public do
+      get 'posts', to: 'public/posts#group', on: :member
+      get 'group_users', to: 'public/group_users#group', on: :member
+    end
+  end
+
+  resources :group_users, only: [:update, :show]
+
+  namespace :public do
+    resources :group_users, only: [:show]
   end
 
   resources :tags, only: [:index, :show, :create]

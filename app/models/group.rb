@@ -19,7 +19,7 @@ class Group < ApplicationRecord
     {
       "id": id,
       "public": public,
-      "twitter_traceability": twitter_traceability,
+      "visible_profile": visible_profile,
       "questions": questions.split('$'),
       "introduction": introduction,
       "tags": tags.pluck(:id)
