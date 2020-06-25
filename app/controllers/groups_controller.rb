@@ -91,6 +91,7 @@ class GroupsController < ApplicationController
       group_user.user = @user
       group_user.group = group
       group_user.admin = true
+      group_user.name = @user.name
 
       group_user.save!
 

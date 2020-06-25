@@ -128,7 +128,7 @@ class PostsController < ApplicationController
 
     post = Post.new
     post.content = params[:content]
-    post.user_group = group.user_groups.find_by(user_id: @user.id)
+    post.group_user = group.group_users.find_by(user_id: @user.id)
     post.group = group
 
     unless post.save
