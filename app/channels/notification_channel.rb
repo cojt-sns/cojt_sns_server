@@ -1,10 +1,10 @@
 ﻿class NotificationChannel < ApplicationCable::Channel
   def subscribed
-    user = User.find_by(id: params[:id])
+    auth = AuthenticateToken.find_by(token: params[:token])
 
-    return reject if user.nil?
+    return reject if auth.nil?
 
-    stream_from "notification_#{params[:id]}"
+    stream_from "notification_#{auth.user.id}"
   end
 
   def unsubscribed
