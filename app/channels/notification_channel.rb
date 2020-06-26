@@ -4,7 +4,7 @@
 
     return reject if user.nil?
 
-    return stream_from "notification_#{params[:id]}"
+    stream_from "notification_#{params[:id]}"
   end
 
   def unsubscribed
