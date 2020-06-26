@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_22_141707) do
+ActiveRecord::Schema.define(version: 2020_06_24_070435) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(version: 2020_06_22_141707) do
     t.boolean "admin", default: false, null: false
     t.text "answers", null: false
     t.text "introduction"
+    t.string "name", null: false
     t.index ["group_id"], name: "index_group_users_on_group_id"
     t.index ["user_id", "group_id"], name: "index_group_users_on_user_id_and_group_id", unique: true
     t.index ["user_id"], name: "index_group_users_on_user_id"
@@ -67,7 +68,7 @@ ActiveRecord::Schema.define(version: 2020_06_22_141707) do
 
   create_table "groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.boolean "public", default: true, null: false
-    t.boolean "twitter_traceability", default: false, null: false
+    t.boolean "visible_profile", default: false, null: false
     t.text "questions"
     t.boolean "introduction", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
@@ -78,10 +79,10 @@ ActiveRecord::Schema.define(version: 2020_06_22_141707) do
     t.text "content"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_id"
     t.bigint "group_id"
+    t.bigint "group_user_id"
     t.index ["group_id"], name: "index_posts_on_group_id"
-    t.index ["user_id"], name: "index_posts_on_user_id"
+    t.index ["group_user_id"], name: "index_posts_on_group_user_id"
   end
 
   create_table "tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -119,8 +120,8 @@ ActiveRecord::Schema.define(version: 2020_06_22_141707) do
   add_foreign_key "group_tags", "tags"
   add_foreign_key "group_users", "groups"
   add_foreign_key "group_users", "users"
+  add_foreign_key "posts", "group_users"
   add_foreign_key "posts", "groups"
-  add_foreign_key "posts", "users"
   add_foreign_key "tags_users", "tags"
   add_foreign_key "tags_users", "users"
 end

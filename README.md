@@ -49,11 +49,25 @@ docker-compose run api <Rails コマンド>
 docker-compose run api rake db:migrate:reset db:seed
 ```
 
+master を pull したとき
+
+```
+docker-compose run api bundle install
+```
+
 コード整形(Rubocop)
+
 ```
 docker-compose run api rubocop --auto-correct
 ```
 
-## DB設計
+ER 図作成
 
-![DB](docs/db.png)
+```
+docker-compose run api bundle exec
+erd --filetype=svg --attributes=content,primary_keys,foreign_keys --filename=docs/db
+```
+
+## DB 設計
+
+![DB](docs/db.svg)

@@ -79,9 +79,9 @@ class GroupsController < ApplicationController
 
       group.questions = params[:questions].join('$')
 
-      group.twitter_traceability = params[:twitter_traceability] if params[:twitter_traceability]
-      group.introduction = params[:introduction] if params[:introduction]
-      group.public = params[:public] if params[:public]
+      group.visible_profile = params[:visible_profile] unless params[:visible_profile].nil?
+      group.introduction = params[:introduction] unless params[:introduction].nil?
+      group.public = params[:public] unless params[:public].nil?
 
       group.save!
 
@@ -91,6 +91,7 @@ class GroupsController < ApplicationController
       group_user.user = @user
       group_user.group = group
       group_user.admin = true
+      group_user.name = @user.name
 
       group_user.save!
 
@@ -147,22 +148,23 @@ class GroupsController < ApplicationController
       return
     end
 
-    if params[:tags]
-      group.tags = []
-      params[:tags].each do |tag_id|
-        tag = Tag.find_by(id: tag_id)
-        if tag.nil?
-          render json: { "code": 400, "message": 'タグが存在しません' }, status: :bad_request
+    if params[:questions]
+      unless params[:questions].is_a?(Array)
+        render json: { "code": 400, "message": '質問事項は配列で入力してください。' }, status: :bad_request
+        return
+      end
+
+      params[:questions]&.each do |question|
+        if question.include?('$')
+          render json: { "code": 400, "message": '質問事項に「$」を含めないでください。' }, status: :bad_request
           return
         end
-        group.tags << tag
       end
     end
-
     group.questions = params[:questions].join('$') if params[:questions]
-    group.twitter_traceability = params[:twitter_traceability] if params[:twitter_traceability]
-    group.introduction = params[:introduction] if params[:introduction]
-    group.public = params[:public] if params[:public]
+    group.visible_profile = params[:visible_profile] unless params[:visible_profile].nil?
+    group.introduction = params[:introduction] unless params[:introduction].nil?
+    group.public = params[:public] unless params[:public].nil?
 
     unless group.valid?
       render json: { "code": 400, "message": group.errors.messages }, status: :bad_request
@@ -208,10 +210,7 @@ class GroupsController < ApplicationController
       return
     end
 
-    group_user = GroupUser.new
-    group_user.answers = params[:answers].join('$')
-    group_user.user = @user
-    group_user.group = group
+    group_user = GroupUser.new(group_user_params)
 
     unless group_user.valid?
       render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
@@ -249,5 +248,11 @@ class GroupsController < ApplicationController
       return
     end
     render json: { "code": 200, "message": 'successful operation' }
+  end
+
+  private
+
+  def group_user_params
+    params.permit(:name, :answers, :introduction)
   end
 end
