@@ -68,6 +68,10 @@ class TagsController < ApplicationController
       return
     end
 
+    parent&.users&.map do |user|
+      ActionCable.server.broadcast("notification_#{user.id}", title: 'タグが追加されました', description: tag.fullname)
+    end
+
     # 正常系
     render json: tag.json
   end
