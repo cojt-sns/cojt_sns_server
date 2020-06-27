@@ -200,7 +200,7 @@ class GroupsController < ApplicationController
       return
     end
 
-    if group.users.include?(user)
+    if group.users.include?(@user)
       render json: { "code": 400, "message": 'すでにこのグループに参加しています。' }, status: :bad_request
       return
     end
@@ -211,7 +211,9 @@ class GroupsController < ApplicationController
     end
 
     group_user = GroupUser.new(group_user_params)
-    group_user.answers = params[:answers].split('$')
+    group_user.answers = params[:answers].join('$')
+    group_user.user = @user
+    group_user.group = group
 
     unless group_user.valid?
       render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
