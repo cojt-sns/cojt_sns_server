@@ -211,6 +211,7 @@ class GroupsController < ApplicationController
     end
 
     group_user = GroupUser.new(group_user_params)
+    group_user.answers = params[:answers].split('$')
 
     unless group_user.valid?
       render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
