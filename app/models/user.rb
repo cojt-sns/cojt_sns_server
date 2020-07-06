@@ -28,6 +28,7 @@ class User < ApplicationRecord
     {
       "id": id,
       "name": name,
+      "private": private,
       "bio": bio.presence || '',
       "image": image_url
     }
