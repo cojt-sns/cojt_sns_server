@@ -42,24 +42,13 @@ ActiveRecord::Schema.define(version: 2020_06_24_070435) do
     t.index ["user_id"], name: "index_authenticate_tokens_on_user_id"
   end
 
-  create_table "group_tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "group_id"
-    t.bigint "tag_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["group_id"], name: "index_group_tags_on_group_id"
-    t.index ["tag_id", "group_id"], name: "index_group_tags_on_tag_id_and_group_id", unique: true
-    t.index ["tag_id"], name: "index_group_tags_on_tag_id"
-  end
-
   create_table "group_users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "group_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "admin", default: false, null: false
-    t.text "answers", null: false
-    t.text "introduction"
+    t.string "image"
     t.string "name", null: false
     t.index ["group_id"], name: "index_group_users_on_group_id"
     t.index ["user_id", "group_id"], name: "index_group_users_on_user_id_and_group_id", unique: true
@@ -67,10 +56,8 @@ ActiveRecord::Schema.define(version: 2020_06_24_070435) do
   end
 
   create_table "groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.boolean "public", default: true, null: false
-    t.boolean "visible_profile", default: false, null: false
-    t.text "questions"
-    t.boolean "introduction", default: false, null: false
+    t.string "name"
+    t.integer "parent_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -85,22 +72,6 @@ ActiveRecord::Schema.define(version: 2020_06_24_070435) do
     t.index ["group_user_id"], name: "index_posts_on_group_user_id"
   end
 
-  create_table "tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "name"
-    t.integer "parent_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "tags_users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "tag_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["tag_id"], name: "index_tags_users_on_tag_id"
-    t.index ["user_id"], name: "index_tags_users_on_user_id"
-  end
-
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.text "bio"
@@ -109,6 +80,7 @@ ActiveRecord::Schema.define(version: 2020_06_24_070435) do
     t.string "image"
     t.string "oauth_token"
     t.string "oauth_token_secret"
+    t.boolean "private"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -116,12 +88,8 @@ ActiveRecord::Schema.define(version: 2020_06_24_070435) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "authenticate_tokens", "users"
-  add_foreign_key "group_tags", "groups"
-  add_foreign_key "group_tags", "tags"
   add_foreign_key "group_users", "groups"
   add_foreign_key "group_users", "users"
   add_foreign_key "posts", "group_users"
   add_foreign_key "posts", "groups"
-  add_foreign_key "tags_users", "tags"
-  add_foreign_key "tags_users", "users"
 end

@@ -8,6 +8,7 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.string :image
       t.string :oauth_token
       t.string :oauth_token_secret
+      t.boolean :private
 
       t.timestamps
       t.index [:email], unique: true

@@ -64,8 +64,7 @@ docker-compose run api rubocop --auto-correct
 ER 図作成
 
 ```
-docker-compose run api bundle exec
-erd --filetype=svg --attributes=content,primary_keys,foreign_keys --filename=docs/db
+docker-compose run api bundle exec erd --filetype=svg --attributes=content,primary_keys,foreign_keys --filename=docs/db
 ```
 
 ## DB 設計
