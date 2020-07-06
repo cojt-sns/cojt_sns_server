@@ -1,5 +1,5 @@
 class GroupUsersController < ApplicationController
-  before_action :authenticate
+  before_action :authenticate, only: [:update]
 
   # get /group_users/:id
   def show
@@ -12,11 +12,6 @@ class GroupUsersController < ApplicationController
 
     if group_user.nil?
       render json: { code: 404, message: '存在しないグループユーザです' }, status: :not_found
-      return
-    end
-
-    unless group_user.group.users.where(id: @user&.id).exists?
-      render json: { "code": 403, "message": '不正なアクセスです' }, status: :forbidden
       return
     end
 
@@ -42,21 +37,7 @@ class GroupUsersController < ApplicationController
       return
     end
 
-    unless params[:answers].is_a?(Array)
-      render json: { "code": 400, "message": '回答は配列で入力してください。' }, status: :bad_request
-      return
-    end
-
-    params[:answers]&.each do |answer|
-      if answer.include?('$')
-        render json: { "code": 400, "message": '回答に「$」を含めないでください。' }, status: :bad_request
-        return
-      end
-    end
-
-    group_user.answers = params[:answers].join('$') if params[:answers]
-    group_user.name = params[:name] unless params[:name].nil?
-    group_user.introduction = params[:introduction] unless params[:introduction].nil?
+    group_user.attributes = group_user_params
 
     unless group_user.valid?
       render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
@@ -92,6 +73,6 @@ class GroupUsersController < ApplicationController
   private
 
   def group_user_params
-    params.permit(:name, :answers, :introduction, :image)
+    params.permit(:name, :image)
   end
 end
