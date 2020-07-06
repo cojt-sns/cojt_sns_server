@@ -73,14 +73,14 @@ ActiveRecord::Schema.define(version: 2020_06_24_070435) do
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.text "bio"
-    t.string "email"
+    t.string "email", null: false
     t.string "password_digest"
     t.string "image"
     t.string "oauth_token"
     t.string "oauth_token_secret"
-    t.boolean "private"
+    t.boolean "private", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
