@@ -18,8 +18,6 @@ class GroupUsersController < ApplicationController
     render json: group_user.json
   end
 
-  # rubocop:disable Metrics/AbcSize
-
   # put /group_users/:id
   def update
     if params[:id].nil? || params[:id] =~ /[^0-9]+/
@@ -51,8 +49,6 @@ class GroupUsersController < ApplicationController
 
     render json: group_user.json
   end
-
-  # rubocop:enable Metrics/AbcSize
 
   # get /groups/:id/group_users
   def group

@@ -16,7 +16,7 @@ class GroupsController < ApplicationController
 
     if params[:name].nil?
       groups = Group.all
-      render json: groups.map{|group| group.jsonWithChildren(descendants)}
+      render json: groups.map { |group| group.json_with_children(descendants) }
       return
     end
 
@@ -36,7 +36,7 @@ class GroupsController < ApplicationController
       end
     end
 
-    render json: groups.map{|group| group.jsonWithChildren(descendants)}
+    render json: groups.map { |group| group.json_with_children(descendants) }
   end
 
   # rubocop:eable Metrics/AbcSize

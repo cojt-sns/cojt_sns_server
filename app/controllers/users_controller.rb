@@ -30,8 +30,6 @@ class UsersController < ApplicationController
     render json: user.json
   end
 
-  # rubocop:disable Metrics/AbcSize
-
   # /users/:id
   def update
     user = User.find_by(id: params[:id])
@@ -61,8 +59,6 @@ class UsersController < ApplicationController
 
     render json: user.json
   end
-
-  # rubocop:enable Metrics/AbcSize
 
   # /users/:id
   def destroy

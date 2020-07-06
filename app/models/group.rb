@@ -27,9 +27,9 @@ class Group < ApplicationRecord
     }
   end
 
-  def jsonWithChildren(descendants)
+  def json_with_children(descendants)
     res = json
-    res["children"] = children.map{|group| group.jsonWithChildren(descendants - 1)} if descendants > 0
+    res['children'] = children.map { |group| group.json_with_children(descendants - 1) } if descendants.positive?
     res
   end
 
