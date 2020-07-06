@@ -9,10 +9,8 @@ class GroupUser < ApplicationRecord
     {
       "id": id,
       "name": name,
-      "answers": answers.split('$'),
-      "introduction": introduction,
       "group_id": group_id,
-      "user_id": group.visible_profile ? user_id : nil,
+      "user_id": user.private ? nil : user_id,
       "image": user.image_url
     }
   end

@@ -14,8 +14,8 @@ group = Group.create(name: 'スマブラ')
 group1 = Group.create(name: "筑波大学")
 group2 = group1.children.build(name: "情報学群")
 group3 = group2.children.build(name: "情報メディア創成学類")
-group4 = group3.children.build(name: "知識情報・図書館学類")
-group5 = group4.children.build(name: "情報科学類")
+group4 = group2.children.build(name: "知識情報・図書館学類")
+group5 = group2.children.build(name: "情報科学類")
 
 group1.save
 group2.save

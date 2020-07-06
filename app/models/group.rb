@@ -11,16 +11,26 @@ class Group < ApplicationRecord
   validate :same_hierarchy_same_name
   validate :ancestors_same_name
 
+  def fullname
+    names = ancestors.map(&:name).reverse
+    names << name
+    names.join('.')
+  end
+
   # JSONを返す
   def json
     {
       "id": id,
-      "public": public,
-      "visible_profile": visible_profile,
-      "questions": questions.split('$'),
-      "introduction": introduction,
-      "tags": tags.pluck(:id)
+      "name": name,
+      "parent_id": parent_id,
+      "fullname": fullname
     }
+  end
+
+  def jsonWithChildren(descendants)
+    res = json
+    res["children"] = children.map{|group| group.jsonWithChildren(descendants - 1)} if descendants > 0
+    res
   end
 
   # validates
