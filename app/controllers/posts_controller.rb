@@ -96,12 +96,7 @@ class PostsController < ApplicationController
       render json: { "code": 404, "message": 'グループが存在しません' }, status: :not_found
       return
     end
-
-    # approvable_ids = User.where.ids
-    # puts "\n\n\n\n"
-    # puts "groups: "
-    # puts @user.groups.ids
-    # puts "\n\n\n\n"
+    
     unless @user.groups.ids.include?(group.id)
       render json: { "code": 403, "message": 'グループへの権限がありません' }, status: :forbidden
       return
