@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  include ImageControllerModule
+
   before_action :authenticate, only: %i(update destroy twitter_profile groups)
 
   # /users

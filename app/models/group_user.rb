@@ -9,12 +9,14 @@ class GroupUser < ApplicationRecord
   validates :user_id, uniqueness: { scope: :group_id }
 
   validate :image, -> {
-    if image.blob.byte_size > 10.megabytes
-      image.purge
-      errors.add(:image, 'ファイルサイズが大きすぎます')
-    elsif !%w[image/jpg image/jpeg image/gif image/png].include?(image.blob.content_type)
-      image.purge
-      errors.add(:image, 'アップロードされたファイルは画像ファイルではありません')
+    if image.present?
+      if image.blob.byte_size > 10.megabytes
+        image.purge
+        errors.add(:image, 'ファイルサイズが大きすぎます')
+      elsif !%w[image/jpg image/jpeg image/gif image/png].include?(image.blob.content_type)
+        image.purge
+        errors.add(:image, 'アップロードされたファイルは画像ファイルではありません')
+      end
     end
   }
 
