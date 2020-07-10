@@ -19,7 +19,11 @@ class GroupUsersController < ApplicationController
       render json: { "code": 403, "message": '不正なアクセスです' }, status: :forbidden
       return
     end
-
+    group_user=group_user.json
+    if @user.id==group_user.user_id
+      render json: group_user.json
+    end
+    group_user.
     render json: group_user.json
   end
 
