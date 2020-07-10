@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include ImageModelModule
+
   has_secure_password
   has_one_attached :image
 
@@ -8,8 +10,6 @@ class User < ApplicationRecord
 
   has_many :posts, dependent: :destroy
   has_many :authenticate_tokens, dependent: :nullify
-
-  DEFAULT_IMAGE_PATH = '/neko.png'.freeze
 
   validates :name, presence: true
   validates :email, uniqueness: true
@@ -32,13 +32,5 @@ class User < ApplicationRecord
       "bio": bio.presence || '',
       "image": image_url
     }
-  end
-
-  def image_url
-    if image.present?
-      Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)
-    else
-      DEFAULT_IMAGE_PATH
-    end
   end
 end
