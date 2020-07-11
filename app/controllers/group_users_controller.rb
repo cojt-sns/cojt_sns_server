@@ -1,4 +1,6 @@
 class GroupUsersController < ApplicationController
+  include ImageControllerModule
+
   before_action :authenticate, only: [:update]
 
   # get /group_users/:id
@@ -36,6 +38,7 @@ class GroupUsersController < ApplicationController
     end
 
     group_user.attributes = group_user_params
+    set_image(group_user, params['image'].to_io(), "#{@user.id}-#{group_user.id}_#{Time.now}") if params['image'].present?
 
     unless group_user.valid?
       render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
@@ -69,6 +72,6 @@ class GroupUsersController < ApplicationController
   private
 
   def group_user_params
-    params.permit(:name, :image)
+    params.permit(:name)
   end
 end
