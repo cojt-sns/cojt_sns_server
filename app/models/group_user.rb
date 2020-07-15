@@ -5,6 +5,8 @@ class GroupUser < ApplicationRecord
   belongs_to :user
   has_one_attached :image
 
+  has_many :posts, dependent: :nullify
+
   validates :name, presence: true
   validates :user_id, uniqueness: { scope: :group_id }
 

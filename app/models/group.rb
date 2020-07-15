@@ -37,11 +37,11 @@ class Group < ApplicationRecord
 
   # 兄弟タグに同名タグが存在するか
   def same_hierarchy_same_name
-    errors.add(:name, '同階層に同名タグが存在します') if siblings.find { |t| t.name == name }.present?
+    errors.add(:name, '同階層に同名グループが存在します') if siblings.find { |t| t.name == name }.present?
   end
 
   # 祖先に同名タグが存在するか
   def ancestors_same_name
-    errors.add(:name, '祖先に同名タグが存在します') if ancestors.find { |t| t.name == name }.present?
+    errors.add(:name, '祖先に同名グループが存在します') if ancestors.find { |t| t.name == name }.present?
   end
 end
