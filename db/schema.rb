@@ -64,12 +64,11 @@ ActiveRecord::Schema.define(version: 2020_06_24_070435) do
 
   create_table "posts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.text "content"
+    t.integer "group_user_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "group_id"
-    t.bigint "group_user_id"
     t.index ["group_id"], name: "index_posts_on_group_id"
-    t.index ["group_user_id"], name: "index_posts_on_group_user_id"
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -90,6 +89,5 @@ ActiveRecord::Schema.define(version: 2020_06_24_070435) do
   add_foreign_key "authenticate_tokens", "users"
   add_foreign_key "group_users", "groups"
   add_foreign_key "group_users", "users"
-  add_foreign_key "posts", "group_users"
   add_foreign_key "posts", "groups"
 end
