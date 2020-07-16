@@ -8,7 +8,7 @@ class GroupsController < ApplicationController
   def index
     or_ = false
 
-    if params[:descendants].present? && (params[:descendants] =~ /[^0-9]+/ || params[:descendants].to_i.negative?)
+    if params[:descendants].present? && (!params[:descendants].match(/(-1|[0-9]+)/) || params[:descendants].to_i < -1)
       render json: { "code": 400, "message": 'descendantsの指定が不適切です。' }, status: :bad_request
       return
     end
@@ -17,6 +17,7 @@ class GroupsController < ApplicationController
 
     if params[:name].nil?
       groups = Group.all
+      groups = Group.where(parent_id: nil) if descendants == -1
       render json: groups.map { |group| group.json_with_children(descendants) }
       return
     end

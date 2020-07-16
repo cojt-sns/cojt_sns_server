@@ -12,16 +12,14 @@ user2 = User.create(email: 'test2@test.com', password: 'abcd1234', name: 'test2'
 group = Group.create(name: 'スマブラ')
 
 group1 = Group.create(name: "筑波大学")
-group2 = group1.children.build(name: "情報学群")
-group3 = group2.children.build(name: "情報メディア創成学類")
-group4 = group2.children.build(name: "知識情報・図書館学類")
-group5 = group2.children.build(name: "情報科学類")
-
-group1.save
-group2.save
-group3.save
-group4.save
-group5.save
+group2 = group1.children.create(name: "情報学群")
+group3 = group2.children.create(name: "情報メディア創成学類")
+group4 = group2.children.create(name: "知識情報・図書館学類")
+group5 = group2.children.create(name: "情報科学類")
+group6 = group1.children.create(name: "芸術専門学群")
+group7 = group1.children.create(name: "AmusementCreators")
+group8 = group7.children.create(name: "スマブラ")
+group9 = group7.children.create(name: "C#")
 
 group_user1 = GroupUser.create(name: 'tset1-1', user: user, group: group)
 group_user2 = GroupUser.create(name: 'tset1-2', user: user, group: group1)

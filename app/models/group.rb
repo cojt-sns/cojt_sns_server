@@ -17,19 +17,25 @@ class Group < ApplicationRecord
     names.join('.')
   end
 
+  def member
+    users.count
+  end
+
   # JSONを返す
   def json
     {
       "id": id,
       "name": name,
       "parent_id": parent_id,
-      "fullname": fullname
+      "fullname": fullname,
+      "member": member
     }
   end
 
   def json_with_children(descendants)
     res = json
-    res['children'] = children.map { |group| group.json_with_children(descendants - 1) } if descendants.positive?
+    res['children'] = []
+    res['children'] = children.map { |group| group.json_with_children(descendants - 1) } if descendants != 0
     res
   end
 
