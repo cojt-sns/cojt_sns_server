@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     post 'leave', to: 'leave', on: :member
     get 'group_users', to: 'group_users#group', on: :member
     put 'group_users', to: 'group_users#update', on: :member
+    get 'group_user', to: 'group_users#group_login_user', on: :member
   end
 
   resources :group_users, only: [:update, :show]

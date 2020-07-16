@@ -1,7 +1,7 @@
 class GroupUsersController < ApplicationController
   include ImageControllerModule
 
-  before_action :authenticate, only: [:update]
+  before_action :authenticate, only: [:update, :group_login_user]
 
   # get /group_users/:id
   def show
@@ -67,6 +67,28 @@ class GroupUsersController < ApplicationController
     end
 
     render json: group.group_users.map(&:json)
+  end
+
+  # get /groups/:id/group_user
+  def group_login_user
+    if params[:id].nil? || params[:id] =~ /[^0-9]+/
+      render json: { code: 400, message: 'Bad Request' }, status: :bad_request
+      return
+    end
+
+    group = Group.find_by(id: params[:id])
+    if group.nil?
+      render json: { code: 404, message: '存在しないグループです' }, status: :not_found
+      return
+    end
+
+    group_user = group.group_users.find_by(user: @user)
+    if group_user.nil?
+      render json: { "code": 403, "message": '不正なアクセスです。ログインユーザーでないと、プロフィールを編集できません。' }, status: :forbidden
+      return
+    end
+
+    render json: group_user.json
   end
 
   private

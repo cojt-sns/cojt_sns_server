@@ -609,6 +609,37 @@ paths:
           description: "グループが存在しません。"
         "500":
           description: "Internal Server Error"
+  /groups/{group_id}/group_user:
+    get:
+      tags:
+        - "GroupUser"
+        - "Group"
+      summary: "グループにおけるログインユーザのメンバー情報を取得する"
+      operationId: "getGroupLoginUser"
+      security:
+        - Bearer: []
+      parameters:
+        - name: "group_id"
+          in: "path"
+          description: "GroupのID"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation "
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/GroupUser"
+        "400":
+          description: "リクエスト不正"
+        "403":
+          description: "認証不正"
+        "404":
+          description: "グループが存在しません。"
+        "500":
+          description: "Internal Server Error"
   /group_users/{id}:
     get:
       tags:
