@@ -1,10 +1,8 @@
 class User < ApplicationRecord
+  include ImageModelModule
+
   has_secure_password
   has_one_attached :image
-
-  # rubocop:disable Rails/HasAndBelongsToMany
-  has_and_belongs_to_many :tags, dependent: :destroy
-  # rubocop:enable Rails/HasAndBelongsToMany
 
   has_many :group_users, dependent: :destroy
   has_many :groups, through: :group_users
@@ -12,8 +10,6 @@ class User < ApplicationRecord
 
   has_many :posts, dependent: :destroy
   has_many :authenticate_tokens, dependent: :nullify
-
-  DEFAULT_IMAGE_PATH = '/neko.png'.freeze
 
   validates :name, presence: true
   validates :email, uniqueness: true
@@ -32,16 +28,9 @@ class User < ApplicationRecord
     {
       "id": id,
       "name": name,
+      "private": private,
       "bio": bio.presence || '',
       "image": image_url
     }
-  end
-
-  def image_url
-    if image.present?
-      Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)
-    else
-      DEFAULT_IMAGE_PATH
-    end
   end
 end

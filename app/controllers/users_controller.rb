@@ -1,27 +1,16 @@
 class UsersController < ApplicationController
+  include ImageControllerModule
+
   before_action :authenticate, only: %i(update destroy twitter_profile groups)
 
   # /users
   def create
-    if params[:tags].present? && !params[:tags].is_a?(Array)
-      render json: { "code": 400, "message": 'タグの指定が不適切です' }, status: :bad_request
-      return
-    end
-
     user = User.new(user_params)
+    set_image(user, params['image'].to_io, "#{user.id}_#{Time.zone.now}") if params['image'].present?
 
     unless user.valid?
       render json: { "code": 400, "message": user.errors.messages }, status: :bad_request
       return
-    end
-
-    params[:tags]&.map do |tag_id|
-      tag = Tag.find_by(id: tag_id)
-      if tag.nil?
-        render json: { "code": 400, "message": '存在しないタグを指定しています' }, status: :bad_request
-        return
-      end
-      user.tags << tag
     end
 
     unless user.save
@@ -44,16 +33,10 @@ class UsersController < ApplicationController
     render json: user.json
   end
 
-  # rubocop:disable Metrics/AbcSize
-
   # /users/:id
   def update
-    if params[:tags].present? && !params[:tags].is_a?(Array)
-      render json: { "code": 400, "message": 'タグの指定が不適切です' }, status: :bad_request
-      return
-    end
-
     user = User.find_by(id: params[:id])
+    set_image(user, params['image'].to_io, "#{user.id}_#{Time.zone.now}") if params['image'].present?
 
     if user.blank?
       render json: { "code": 404, "message": 'ユーザが見つかりません。' }, status: :not_found
@@ -68,16 +51,6 @@ class UsersController < ApplicationController
 
     user.attributes = user_params
 
-    user.tags = [] if params[:tags]
-    params[:tags]&.map do |tag_id|
-      tag = Tag.find_by(id: tag_id)
-      if tag.nil?
-        render json: { "code": 400, "message": '存在しないタグを指定しています' }, status: :bad_request
-        return
-      end
-      user.tags << tag
-    end
-
     unless user.valid?
       render json: { "code": 400, "message": user.errors.messages }, status: :bad_request
       return
@@ -90,8 +63,6 @@ class UsersController < ApplicationController
 
     render json: user.json
   end
-
-  # rubocop:enable Metrics/AbcSize
 
   # /users/:id
   def destroy
@@ -114,20 +85,6 @@ class UsersController < ApplicationController
     end
 
     render json: { "code": 200, "message": '削除しました' }, status: :ok
-  end
-
-  # /users/:id/tags
-  def tags
-    user = User.find_by(id: params[:id])
-
-    if user.blank?
-      render json: { "code": 404, "message": 'ユーザが見つかりません。' }, status: :not_found
-      return
-    end
-
-    res = []
-    res = user.tags.map(&:json) if user.tags.present?
-    render json: res
   end
 
   # /users/:id/groups
@@ -153,6 +110,6 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.permit(:name, :bio, :image, :email, :password, :oauth_token, :oauth_token_secret)
+    params.permit(:name, :bio, :email, :password, :oauth_token, :oauth_token_secret, :private)
   end
 end

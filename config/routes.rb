@@ -12,19 +12,10 @@ Rails.application.routes.draw do
     post 'leave', to: 'leave', on: :member
     get 'group_users', to: 'group_users#group', on: :member
     put 'group_users', to: 'group_users#update', on: :member
-    scope :public do
-      get 'posts', to: 'public/posts#group', on: :member
-      get 'group_users', to: 'public/group_users#group', on: :member
-    end
+    get 'group_user', to: 'group_users#group_login_user', on: :member
   end
 
   resources :group_users, only: [:update, :show]
-
-  namespace :public do
-    resources :group_users, only: [:show]
-  end
-
-  resources :tags, only: [:index, :show, :create]
 
   resources :users, only: [:create, :show, :update, :destroy] do
     get 'tags', to: 'users#tags', on: :member

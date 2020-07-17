@@ -1,5 +1,7 @@
 class GroupUsersController < ApplicationController
-  before_action :authenticate
+  include ImageControllerModule
+
+  before_action :authenticate, only: %i(update group_login_user)
 
   # get /group_users/:id
   def show
@@ -12,11 +14,6 @@ class GroupUsersController < ApplicationController
 
     if group_user.nil?
       render json: { code: 404, message: '存在しないグループユーザです' }, status: :not_found
-      return
-    end
-
-    unless group_user.group.users.where(id: @user&.id).exists?
-      render json: { "code": 403, "message": '不正なアクセスです' }, status: :forbidden
       return
     end
 
@@ -42,21 +39,10 @@ class GroupUsersController < ApplicationController
       return
     end
 
-    unless params[:answers].is_a?(Array)
-      render json: { "code": 400, "message": '回答は配列で入力してください。' }, status: :bad_request
-      return
+    group_user.attributes = group_user_params
+    if params['image'].present?
+      set_image(group_user, params['image'].to_io, "#{@user.id}-#{group_user.id}_#{Time.zone.now}")
     end
-
-    params[:answers]&.each do |answer|
-      if answer.include?('$')
-        render json: { "code": 400, "message": '回答に「$」を含めないでください。' }, status: :bad_request
-        return
-      end
-    end
-
-    group_user.answers = params[:answers].join('$') if params[:answers]
-    group_user.name = params[:name] unless params[:name].nil?
-    group_user.introduction = params[:introduction] unless params[:introduction].nil?
 
     unless group_user.valid?
       render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
@@ -89,9 +75,31 @@ class GroupUsersController < ApplicationController
     render json: group.group_users.map(&:json)
   end
 
+  # get /groups/:id/group_user
+  def group_login_user
+    if params[:id].nil? || params[:id] =~ /[^0-9]+/
+      render json: { code: 400, message: 'Bad Request' }, status: :bad_request
+      return
+    end
+
+    group = Group.find_by(id: params[:id])
+    if group.nil?
+      render json: { code: 404, message: '存在しないグループです' }, status: :not_found
+      return
+    end
+
+    group_user = group.group_users.find_by(user: @user)
+    if group_user.nil?
+      render json: { "code": 403, "message": '不正なアクセスです。ログインユーザーでないと、プロフィールを編集できません。' }, status: :forbidden
+      return
+    end
+
+    render json: group_user.json
+  end
+
   private
 
   def group_user_params
-    params.permit(:name, :answers, :introduction, :image)
+    params.permit(:name)
   end
 end

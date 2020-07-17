@@ -2,7 +2,7 @@
   def subscribed
     auth = AuthenticateToken.find_by(token: params[:token])
 
-    return reject if auth.nil?
+    return reject if auth.nil? && !auth.check
 
     stream_from "notification_#{auth.user.id}"
   end

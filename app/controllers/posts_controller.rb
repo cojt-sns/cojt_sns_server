@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :authenticate, only: %i(update destroy group create show)
+  before_action :authenticate, only: %i(update destroy create show)
 
   # get /posts
   def index
@@ -94,16 +94,6 @@ class PostsController < ApplicationController
     group = Group.find_by(id: params[:id])
     if group.blank?
       render json: { "code": 404, "message": 'グループが存在しません' }, status: :not_found
-      return
-    end
-
-    # approvable_ids = User.where.ids
-    # puts "\n\n\n\n"
-    # puts "groups: "
-    # puts @user.groups.ids
-    # puts "\n\n\n\n"
-    unless @user.groups.ids.include?(group.id)
-      render json: { "code": 403, "message": 'グループへの権限がありません' }, status: :forbidden
       return
     end
 

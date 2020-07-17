@@ -31,6 +31,7 @@ class AuthController < ApplicationController
     auth = AuthenticateToken.new
     auth.user = user
     auth.token = SecureRandom.uuid
+    auth.last_access = DateTime.now
     unless auth.save
       render json: { "code": 500, "message": 'トークンを生成できませんでした。' }, status: :internal_server_error
       return

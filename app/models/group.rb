@@ -1,56 +1,53 @@
 class Group < ApplicationRecord
+  acts_as_tree
+
   has_many :group_users, dependent: :destroy
   has_many :users, through: :group_users
   accepts_nested_attributes_for :group_users, allow_destroy: true
 
-  has_many :group_tags, dependent: :destroy
-  has_many :tags, through: :group_tags
-  accepts_nested_attributes_for :group_tags, allow_destroy: true
-
   has_many :posts, dependent: :destroy
 
-  validates :tags, presence: true
-  validate :same_tags
-  validate :same_ancestor_tags
-  validate :unique_tags
+  validates :name, format: { with: %r{\A[^\.\#@/\\]+\z} }
+  validate :same_hierarchy_same_name
+  validate :ancestors_same_name
+
+  def fullname
+    names = ancestors.map(&:name).reverse
+    names << name
+    names.join('.')
+  end
+
+  def member
+    users.count
+  end
 
   # JSONを返す
   def json
     {
       "id": id,
-      "public": public,
-      "visible_profile": visible_profile,
-      "questions": questions.split('$'),
-      "introduction": introduction,
-      "tags": tags.pluck(:id)
+      "name": name,
+      "parent_id": parent_id,
+      "fullname": fullname,
+      "member": member
     }
   end
 
-  # validate
-
-  # タグが重複しているか
-  def unique_tags
-    errors.add(:tags, 'タグが重複しています') if tags.uniq(&:id).size < tags.size
+  def json_with_children(descendants)
+    res = json
+    res['children'] = []
+    res['children'] = children.map { |group| group.json_with_children(descendants - 1) } if descendants != 0
+    res
   end
 
-  # 同じタグを持つグループが存在するか
-  def same_tags
-    groups = Group.where.not(id: id)
-    groups.each do |group|
-      if group.tags.map(&:id).sort == tags.map(&:id).sort
-        errors.add(:tags, '同じタグを持つグループが存在します')
-        return
-      end
-    end
+  # validates
+
+  # 兄弟タグに同名タグが存在するか
+  def same_hierarchy_same_name
+    errors.add(:name, '同階層に同名グループが存在します') if siblings.find { |t| t.name == name }.present?
   end
 
-  # 祖先が重複するタグを持っているか
-  def same_ancestor_tags
-    tags.each do |tag|
-      if tag.ancestors.any? { |t| tags.include?(t) }
-        errors.add(:tags, '祖先が重複するタグが存在します')
-        return
-      end
-    end
+  # 祖先に同名タグが存在するか
+  def ancestors_same_name
+    errors.add(:name, '祖先に同名グループが存在します') if ancestors.find { |t| t.name == name }.present?
   end
 end
