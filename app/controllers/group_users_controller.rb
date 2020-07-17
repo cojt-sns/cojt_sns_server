@@ -1,7 +1,7 @@
 class GroupUsersController < ApplicationController
   include ImageControllerModule
 
-  before_action :authenticate, only: [:update, :group_login_user]
+  before_action :authenticate, only: %i(update group_login_user)
 
   # get /group_users/:id
   def show
@@ -19,6 +19,8 @@ class GroupUsersController < ApplicationController
 
     render json: group_user.json
   end
+
+  # rubocop:disable Metrics/AbcSize
 
   # put /group_users/:id
   def update
@@ -38,7 +40,9 @@ class GroupUsersController < ApplicationController
     end
 
     group_user.attributes = group_user_params
-    set_image(group_user, params['image'].to_io(), "#{@user.id}-#{group_user.id}_#{Time.now}") if params['image'].present?
+    if params['image'].present?
+      set_image(group_user, params['image'].to_io, "#{@user.id}-#{group_user.id}_#{Time.zone.now}")
+    end
 
     unless group_user.valid?
       render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
@@ -52,6 +56,8 @@ class GroupUsersController < ApplicationController
 
     render json: group_user.json
   end
+
+  # rubocop:enable Metrics/AbcSize
 
   # get /groups/:id/group_users
   def group

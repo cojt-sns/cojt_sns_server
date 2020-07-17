@@ -15,7 +15,7 @@ class GroupUser < ApplicationRecord
       if image.blob.byte_size > 10.megabytes
         image.purge
         errors.add(:image, 'ファイルサイズが大きすぎます')
-      elsif !%w[image/jpg image/jpeg image/gif image/png].include?(image.blob.content_type)
+      elsif !%w(image/jpg image/jpeg image/gif image/png).include?(image.blob.content_type)
         image.purge
         errors.add(:image, 'アップロードされたファイルは画像ファイルではありません')
       end

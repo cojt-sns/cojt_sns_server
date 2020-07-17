@@ -49,4 +49,4 @@ gem 'acts_as_tree'
 gem 'rubocop'
 gem 'rubocop-rails'
 
-gem "mini_magick"
+gem 'mini_magick'

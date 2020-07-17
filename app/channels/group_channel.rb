@@ -4,7 +4,7 @@ class GroupChannel < ApplicationCable::Channel
 
     return reject if group.nil?
 
-    return stream_from "group_#{params[:id]}"
+    stream_from "group_#{params[:id]}"
   end
 
   def unsubscribed

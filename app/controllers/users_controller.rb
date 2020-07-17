@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   # /users
   def create
     user = User.new(user_params)
-    set_image(user, params['image'].to_io(), "#{user.id}_#{Time.now}") if params['image'].present?
+    set_image(user, params['image'].to_io, "#{user.id}_#{Time.zone.now}") if params['image'].present?
 
     unless user.valid?
       render json: { "code": 400, "message": user.errors.messages }, status: :bad_request
@@ -36,7 +36,7 @@ class UsersController < ApplicationController
   # /users/:id
   def update
     user = User.find_by(id: params[:id])
-    set_image(user, params['image'].to_io(), "#{user.id}_#{Time.now}") if params['image'].present?
+    set_image(user, params['image'].to_io, "#{user.id}_#{Time.zone.now}") if params['image'].present?
 
     if user.blank?
       render json: { "code": 404, "message": 'ユーザが見つかりません。' }, status: :not_found

@@ -1,5 +1,4 @@
 ﻿module ImageModelModule
-
   DEFAULT_IMAGE_PATH = '/default.png'.freeze
 
   def image_url
