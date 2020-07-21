@@ -43,6 +43,10 @@
         {
           "sourceVolume": "letsencrypt",
           "containerPath": "/etc/letsencrypt"
+        },
+        {
+          "sourceVolume": "storage",
+          "containerPath": "/opt/app/storage"
         }
       ],
       "workingDirectory": "/opt/app",
@@ -115,6 +119,16 @@
   "volumes": [
     {
       "name": "letsencrypt",
+      "dockerVolumeConfiguration": {
+        "driverOpts": null,
+        "labels": null,
+        "driver": "local",
+        "scope": "shared",
+        "autoprovision": true
+      }
+    },
+    {
+      "name": "storage",
       "dockerVolumeConfiguration": {
         "driverOpts": null,
         "labels": null,
