@@ -562,9 +562,9 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: "#/components/schemas/Post"
+              $ref: "#/components/schemas/PostBody"
       responses:
         "200":
           description: "successful operation"
@@ -1020,10 +1020,64 @@ components:
           description: "グループのID"
           readOnly: true
           example: 1
+        image_url:
+          type: "string"
+          description: "画像のurl"
+          readOnly: true
+          example: default.png
+        thread_posts:
+          type: "array"
+          description: "スレッドのポスト"
+          readOnly: true
+          items:
+            type: object
+            properties:
+              id:
+                type: "integer"
+                example: 1
+                readOnly: true
+              content:
+                type: "string"
+                description: "内容"
+                example: "こんにちは！"
+              group_user_id:
+                type: "integer"
+                example: 1
+                description: "グループ-ユーザーテーブルのid"
+                readOnly: true
+              group_id:
+                type: "integer"
+                description: "グループのID"
+                readOnly: true
+                example: 1
+              image_url:
+                type: "string"
+                description: "画像のurl"
+                readOnly: true
+                example: default.png
+              created_at:
+                type: "string"
+                description: "作成日時"
+                example: "2020-06-09T09:20:52.220Z"
         created_at:
           type: "string"
           description: "作成日時"
           example: "2020-06-09T09:20:52.220Z"
+    PostBody:
+      type: "object"
+      properties:
+        content:
+          type: "string"
+          description: "内容"
+          example: "こんにちは！"
+        image:
+          format: binary
+          writeOnly: true
+          example: "data:application/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAE1JREFUOI1jYBgFWEF6aur/9NTU/7j4yICJUssoNgAO8DkTnzqKXcCIzyZk/szZs7GqxSqIyyvYDKG+FwgFJLor8Lpg5uzZjLj8PngAAIkFIS4IIkrMAAAAAElFTkSuQmCC"
+        thread_id:
+          type: integer
+          description: スレッドのID
+          default: null
 
     PostSearchResult:
       type: array
