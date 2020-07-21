@@ -97,11 +97,12 @@ class PostsController < ApplicationController
       return
     end
 
-    posts = basic_search(params, Post.where(group_id: params['id']))
+    posts = basic_search(params, Post.where(group_id: params['id'], parent_id: nil))
 
     render json: posts.map(&:json).to_json
   end
 
+  # rubocop:disable Metrics/AbcSize
   # post /groups/:id/posts
   def create
     params = posts_params
@@ -116,10 +117,25 @@ class PostsController < ApplicationController
       return
     end
 
+    unless params[:thread_id].nil?
+      thread = Post.find_by(id: params[:thread_id])
+      if thread.nil?
+        render json: { "code": 400, "message": 'スレッドがありません' }, status: :not_found
+        return
+      end
+
+      unless thread.group == group
+        render json: { "code": 400, "message": 'スレッドがありません' }, status: :not_found
+        return
+      end
+    end
+
     post = Post.new
     post.content = params[:content]
     post.group_user = group.group_users.find_by(user_id: @user.id)
     post.group = group
+    post.parent_id = params[:thread_id] unless params[:thread_id].nil?
+    post.image = params[:image] unless params[:image].nil?
 
     unless post.save
       render json: { "code": 500, "message": '投稿できませんでした。' }, status: :internal_server_error
@@ -130,11 +146,12 @@ class PostsController < ApplicationController
 
     render json: post.json
   end
+  # rubocop:enable Metrics/AbcSize
 
   private
 
   def posts_params
-    params.permit(:id, :content, :from, :since, :until, :since_timestamp, :until_timestamp, :max)
+    params.permit(:id, :content, :from, :since, :until, :since_timestamp, :until_timestamp, :max, :thread_id, :image)
   end
 
   def basic_search(search_params, posts)
