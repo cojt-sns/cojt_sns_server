@@ -1,17 +1,45 @@
 class Post < ApplicationRecord
+  include ImageModelModule
+
+  acts_as_tree
   belongs_to :group
   belongs_to :group_user
+  has_one_attached :image
 
   delegate :user, to: :group_user
 
+  validate :parent_id, -> {
+    errors.add(:parent_id, 'スレッドのポストにスレッドを加えることはできません') if tree_level > 1
+  }
+
+  validate :image, -> {
+    if image.present?
+      if image.blob.byte_size > 10.megabytes
+        image.purge
+        errors.add(:image, 'ファイルサイズが大きすぎます')
+      elsif !%w(image/jpg image/jpeg image/gif image/png).include?(image.blob.content_type)
+        image.purge
+        errors.add(:image, 'アップロードされたファイルは画像ファイルではありません')
+      end
+    end
+  }
+
+  def image_url
+    Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true) if image.present?
+  end
+
   def json
-    {
+    res = {
       "id": id,
       "content": content,
       "group_user_id": group_user_id,
       "group_id": group_id,
+      "image": image_url,
       "created_at": created_at
     }
+    res['thread'] = children.map(&:json) if tree_level.zero?
+    res['thread_id'] = parent_id unless tree_level.zero?
+    res
   end
 
   scope :content_like, ->(value) {
