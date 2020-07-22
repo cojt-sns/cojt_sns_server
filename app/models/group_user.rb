@@ -28,7 +28,8 @@ class GroupUser < ApplicationRecord
       "name": name,
       "group_id": group_id,
       "user_id": user.private ? nil : user_id,
-      "image": image_url
+      "image": image_url,
+      "admin": admin
     }
   end
 
