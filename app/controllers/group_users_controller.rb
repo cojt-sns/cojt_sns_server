@@ -120,7 +120,7 @@ class GroupUsersController < ApplicationController
     end
 
     group_user.admin = true
-    
+
     unless group_user.valid?
       render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
       return
@@ -134,6 +134,7 @@ class GroupUsersController < ApplicationController
     render json: group_user.json
   end
 
+  # rubocop:disable Metrics/AbcSize
   # post /group_users/:id/unauthorization
   def unauthorization
     if params[:id].nil? || params[:id] =~ /[^0-9]+/
@@ -162,7 +163,7 @@ class GroupUsersController < ApplicationController
     end
 
     group_user.admin = false
-    
+
     unless group_user.valid?
       render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
       return
@@ -175,6 +176,8 @@ class GroupUsersController < ApplicationController
 
     render json: group_user.json
   end
+
+  # rubocop:enable Metrics/AbcSize
 
   private
 
