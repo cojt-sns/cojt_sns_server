@@ -703,6 +703,70 @@ paths:
           description: "グループまたはユーザが存在しません。または、グループにユーザが参加していない。"
         "500":
           description: "Internal Server Error"
+  /group_users/{id}/authorization:
+    post:
+      tags:
+        - "GroupUser"
+      security:
+        - Bearer: []
+      summary: "グループのメンバーに管理者権限を追加する"
+      operationId: "authorizationGroupUser"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ユーザーのエイリアスID"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation "
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/GroupUser"
+        "400":
+          description: "リクエスト不正"
+        "401":
+          description: "認証不正"
+        "403":
+          description: "グループへの権限がありません。"
+        "404":
+          description: "グループまたはユーザが存在しません。または、グループにユーザが参加していない。"
+        "500":
+          description: "Internal Server Error"
+  /group_users/{id}/unauthorization:
+    post:
+      tags:
+        - "GroupUser"
+      security:
+        - Bearer: []
+      summary: "グループのメンバーに管理者権限を削除する"
+      operationId: "unauthorizationGroupUser"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "ユーザーのエイリアスID"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        "200":
+          description: "successful operation "
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/GroupUser"
+        "400":
+          description: "リクエスト不正"
+        "401":
+          description: "認証不正"
+        "403":
+          description: "グループへの権限がありません。"
+        "404":
+          description: "グループまたはユーザが存在しません。または、グループにユーザが参加していない。"
+        "500":
+          description: "Internal Server Error"
   /posts/{id}:
     get:
       tags:

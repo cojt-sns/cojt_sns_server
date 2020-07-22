@@ -15,7 +15,10 @@ Rails.application.routes.draw do
     get 'group_user', to: 'group_users#group_login_user', on: :member
   end
 
-  resources :group_users, only: [:update, :show]
+  resources :group_users, only: [:update, :show] do
+    post 'authorization', to: 'authorization', on: :member
+    post 'unauthorization', to: 'unauthorization', on: :member
+  end
 
   resources :users, only: [:create, :show, :update, :destroy] do
     get 'tags', to: 'users#tags', on: :member
