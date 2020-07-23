@@ -62,6 +62,8 @@ jobs:
         MYSQL_HOST: ${{ secrets.MYSQL_HOST_STG }}
         MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME_STG }}
         MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD_STG }}
+        TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+        TWITTER_API_KEY_SECRET: ${{ secrets.TWITTER_API_KEY_SECRET }}
       run: |
         # Build a docker container and
         # push it to ECR so that it can
@@ -74,6 +76,8 @@ jobs:
         --build-arg MYSQL_HOST="$MYSQL_HOST" \
         --build-arg MYSQL_USERNAME="$MYSQL_USERNAME" \
         --build-arg MYSQL_PASSWORD="$MYSQL_PASSWORD" \
+        --build-arg TWITTER_API_KEY="$TWITTER_API_KEY" \
+        --build-arg TWITTER_API_KEY_SECRET="$TWITTER_API_KEY_SECRET" \
         -f deploy/Dockerfile.stg . 
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
