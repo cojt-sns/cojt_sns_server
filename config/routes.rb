@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   post 'auth/login'
   post 'auth/logout'
   get 'auth/user'
+  get '/auth/:provider/callback', to: 'auth#twitter_callback'
   
   resources :groups, only: [:index, :create, :show, :update] do
     get 'posts', to: 'posts#group', on: :member
