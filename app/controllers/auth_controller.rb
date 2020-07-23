@@ -71,11 +71,15 @@ class AuthController < ApplicationController
     render json: @user.json
   end
 
+  # rubocop:disable Metrics/AbcSize
   # get /auth/:provider/callback
   def twitter_callback
     user_data = request.env['omniauth.auth']
 
-    user = User.find_by(oauth_token: user_data[:credentials][:token], oauth_token_secret: user_data[:credentials][:secret])
+    user = User.find_by(
+      oauth_token: user_data[:credentials][:token],
+      oauth_token_secret: user_data[:credentials][:secret]
+    )
 
     if user.nil?
       user = User.new
@@ -83,18 +87,18 @@ class AuthController < ApplicationController
       user.bio = user_data[:info][:description]
       user.oauth_token = user_data[:credentials][:token]
       user.oauth_token_secret = user_data[:credentials][:secret]
-      user.password = SecureRandom.uuid #passwordは空にできない
-      image =  OpenURI.open_uri(user_data[:info][:image])
+      user.password = SecureRandom.uuid # passwordは空にできない
+      image = OpenURI.open_uri(user_data[:info][:image])
       set_image(user, image, "#{user.id}_#{Time.zone.now}")
 
       unless user.valid?
         logger.debug(user.errors.messages)
-        redirect_to ENV['FRONT'] + "/?error=400"
+        redirect_to ENV['FRONT'] + '/?error=400'
         return
       end
 
       unless user.save
-        redirect_to ENV['FRONT'] + "/?error=500"
+        redirect_to ENV['FRONT'] + '/?error=500'
         return
       end
     end
@@ -105,13 +109,14 @@ class AuthController < ApplicationController
     auth.token = SecureRandom.uuid
     auth.last_access = DateTime.now
     unless auth.save
-      redirect_to ENV['FRONT'] + "/?error=501"
+      redirect_to ENV['FRONT'] + '/?error=501'
       return
     end
 
     redirect_to ENV['FRONT'] + "/login?token=#{auth.token}"
-  rescue => e
+  rescue StandardError => e
     logger.debug(e)
     redirect_to ENV['FRONT']
   end
+  # rubocop:enable Metrics/AbcSize
 end
