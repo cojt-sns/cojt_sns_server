@@ -6,7 +6,7 @@ class GroupUsersController < ApplicationController
   # get /group_users/:id
   def show
     if params[:id].nil? || params[:id] =~ /[^0-9]+/
-      render json: { code: 400, message: 'Bad Request' }, status: :bad_request
+      render json: { code: 400, message: '不適切なリクエストが行われました' }, status: :bad_request
       return
     end
 
@@ -25,7 +25,7 @@ class GroupUsersController < ApplicationController
   # put /group_users/:id
   def update
     if params[:id].nil? || params[:id] =~ /[^0-9]+/
-      render json: { code: 400, message: 'Bad Request' }, status: :bad_request
+      render json: { code: 400, message: '不適切なリクエストが行われました' }, status: :bad_request
       return
     end
     group_user = GroupUser.find_by(id: params[:id])
@@ -45,7 +45,7 @@ class GroupUsersController < ApplicationController
     end
 
     unless group_user.valid?
-      render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
+      render json: { "code": 400, "message": group_user.errors.messages.values.first }, status: :bad_request
       return
     end
 
@@ -62,7 +62,7 @@ class GroupUsersController < ApplicationController
   # get /groups/:id/group_users
   def group
     if params[:id].nil? || params[:id] =~ /[^0-9]+/
-      render json: { code: 400, message: 'Bad Request' }, status: :bad_request
+      render json: { code: 400, message: '不適切なリクエストが行われました' }, status: :bad_request
       return
     end
 
@@ -78,7 +78,7 @@ class GroupUsersController < ApplicationController
   # get /groups/:id/group_user
   def group_login_user
     if params[:id].nil? || params[:id] =~ /[^0-9]+/
-      render json: { code: 400, message: 'Bad Request' }, status: :bad_request
+      render json: { code: 400, message: '不適切なリクエストが行われました' }, status: :bad_request
       return
     end
 

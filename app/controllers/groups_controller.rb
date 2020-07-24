@@ -62,7 +62,7 @@ class GroupsController < ApplicationController
       render json: group.json
     end
   rescue ActiveRecord::RecordInvalid => e
-    render json: { "code": 500, "message": e.record.errors.messages }, status: :internal_server_error
+    render json: { "code": 500, "message": e.record.errors.messages.values.first }, status: :internal_server_error
   end
 
   # get /groups/{id}
@@ -89,19 +89,19 @@ class GroupsController < ApplicationController
 
     group_user = group.group_users.where(user: @user, admin: true)
     if group_user.nil?
-      render json: { "code": 403, "message": '管理者でないため、更新できませんでした。' }, status: :forbidden
+      render json: { "code": 403, "message": '管理者でないため、グループ情報を更新できません。' }, status: :forbidden
       return
     end
 
     group.attributes = group_params
 
     unless group.valid?
-      render json: { "code": 400, "message": group.errors.messages }, status: :bad_request
+      render json: { "code": 400, "message": group.errors.messages.values.first }, status: :bad_request
       return
     end
 
     unless group.save
-      render json: { "code": 500, "message": 'グループを編集できませんでした。' }, status: :internal_server_error
+      render json: { "code": 500, "message": 'グループの編集に失敗しました。' }, status: :internal_server_error
       return
     end
 
@@ -128,12 +128,12 @@ class GroupsController < ApplicationController
     set_image(group_user, params['image'].to_io, "#{@user.id}_#{Time.zone.now}") if params['image'].present?
 
     unless group_user.valid?
-      render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
+      render json: { "code": 400, "message": group_user.errors.messages.values.first }, status: :bad_request
       return
     end
 
     unless group_user.save
-      render json: { "code": 500, "message": 'グループに参加できませんでした。' }, status: :internal_server_error
+      render json: { "code": 500, "message": 'グループの参加に失敗しました。' }, status: :internal_server_error
       return
     end
 
