@@ -45,7 +45,7 @@ class GroupUsersController < ApplicationController
     end
 
     unless group_user.valid?
-      render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
+      render json: { "code": 400, "message": group_user.errors.messages.values.first }, status: :bad_request
       return
     end
 

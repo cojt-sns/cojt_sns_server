@@ -62,7 +62,7 @@ class GroupsController < ApplicationController
       render json: group.json
     end
   rescue ActiveRecord::RecordInvalid => e
-    render json: { "code": 500, "message": e.record.errors.messages }, status: :internal_server_error
+    render json: { "code": 500, "message": e.record.errors.messages.values.first }, status: :internal_server_error
   end
 
   # get /groups/{id}
@@ -96,7 +96,7 @@ class GroupsController < ApplicationController
     group.attributes = group_params
 
     unless group.valid?
-      render json: { "code": 400, "message": group.errors.messages }, status: :bad_request
+      render json: { "code": 400, "message": group.errors.messages.values.first }, status: :bad_request
       return
     end
 
@@ -128,7 +128,7 @@ class GroupsController < ApplicationController
     set_image(group_user, params['image'].to_io, "#{@user.id}_#{Time.zone.now}") if params['image'].present?
 
     unless group_user.valid?
-      render json: { "code": 400, "message": group_user.errors.messages }, status: :bad_request
+      render json: { "code": 400, "message": group_user.errors.messages.values.first }, status: :bad_request
       return
     end
 

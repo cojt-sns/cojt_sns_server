@@ -9,7 +9,7 @@ class UsersController < ApplicationController
     set_image(user, params['image'].to_io, "#{user.id}_#{Time.zone.now}") if params['image'].present?
 
     unless user.valid?
-      render json: { "code": 400, "message": user.errors.messages }, status: :bad_request
+      render json: { "code": 400, "message": user.errors.messages.values.first }, status: :bad_request
       return
     end
 
@@ -52,7 +52,7 @@ class UsersController < ApplicationController
     user.attributes = user_params
 
     unless user.valid?
-      render json: { "code": 400, "message": user.errors.messages }, status: :bad_request
+      render json: { "code": 400, "message": user.errors.messages.values.first }, status: :bad_request
       return
     end
 
