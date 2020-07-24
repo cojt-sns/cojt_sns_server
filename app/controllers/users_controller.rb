@@ -84,7 +84,7 @@ class UsersController < ApplicationController
       return
     end
 
-    render json: { "code": 200, "message": '削除しました' }, status: :ok
+    render json: { "code": 200, "message": 'ユーザーを削除しました' }, status: :ok
   end
 
   # /users/:id/groups

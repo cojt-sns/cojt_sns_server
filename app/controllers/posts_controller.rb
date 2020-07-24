@@ -12,19 +12,19 @@ class PostsController < ApplicationController
   # get /posts/{id}
   def show
     if params[:id].nil? || params[:id] =~ /[^0-9]+/
-      render json: { code: '400', message: 'Bad Request' }, status: :bad_request
+      render json: { code: '400', message: '不適切なリクエストが行われました' }, status: :bad_request
       return
     end
 
     post = Post.find_by(id: params[:id])
 
     if post.nil?
-      render json: { code: '404', message: '存在しない投稿です' }, status: :not_found
+      render json: { code: '404', message: '存在しない投稿です。' }, status: :not_found
       return
     end
 
     unless post.group.users.where(id: @user&.id).exists?
-      render json: { "code": 403, "message": '不正なアクセスです・' }, status: :forbidden
+      render json: { "code": 403, "message": '不正なアクセスです。' }, status: :forbidden
       return
     end
 
@@ -34,7 +34,7 @@ class PostsController < ApplicationController
   # put /posts/{id}
   def update
     if params[:id].nil? || params[:id] =~ /[^0-9]+/
-      render json: { code: '400', message: 'Bad Request' }, status: :bad_request
+      render json: { code: '400', message: '不適切なリクエストが行われました' }, status: :bad_request
       return
     end
 
@@ -53,7 +53,7 @@ class PostsController < ApplicationController
     post.content = params[:content]
 
     unless post.save
-      render json: { "code": 500, "message": '更新できませんでした。' }, status: :internal_server_error
+      render json: { "code": 500, "message": '投稿の編集に失敗しました。' }, status: :internal_server_error
       return
     end
 
@@ -65,7 +65,7 @@ class PostsController < ApplicationController
   # delete /posts/{id}
   def destroy
     if params[:id].nil? || params[:id] =~ /[^0-9]+/
-      render json: { code: '400', message: 'Bad Request' }, status: :bad_request
+      render json: { code: '400', message: '不適切なリクエストが行われました' }, status: :bad_request
       return
     end
     post = Post.find_by(id: params[:id])
@@ -113,7 +113,7 @@ class PostsController < ApplicationController
     end
 
     unless @user.groups.ids.include?(group.id)
-      render json: { "code": 403, "message": 'グループへの権限がありません' }, status: :forbidden
+      render json: { "code": 403, "message": 'グループに参加していないため、投稿の権限がありません' }, status: :forbidden
       return
     end
 
@@ -138,7 +138,7 @@ class PostsController < ApplicationController
     post.image = params[:image] unless params[:image].nil?
 
     unless post.save
-      render json: { "code": 500, "message": '投稿できませんでした。' }, status: :internal_server_error
+      render json: { "code": 500, "message": '投稿に失敗しました。' }, status: :internal_server_error
       return
     end
 
