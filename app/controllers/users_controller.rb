@@ -25,7 +25,7 @@ class UsersController < ApplicationController
   def show
     user = User.find_by(id: params[:id])
 
-    if user.blank?
+    if user.nil?
       render json: { "code": 404, "message": 'ユーザが見つかりません。' }, status: :not_found
       return
     end
@@ -94,11 +94,16 @@ class UsersController < ApplicationController
     if @user == user
       groups = @user.groups
     else
-      if user.blank?
+      if user.nil?
         render json: { "code": 404, "message": 'ユーザが見つかりません。' }, status: :not_found
         return
       end
-      groups = user.groups.where(public: true)
+
+      if user.private
+        render json: { "code": 403, "message": 'アクセス権限がありません' }, status: :forbidden
+        return
+      end
+      groups = user.groups
     end
 
     render json: groups.map(&:json).to_json
