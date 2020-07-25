@@ -145,7 +145,10 @@ class PostsController < ApplicationController
     if post.parent_id.present?
       target_group_user = Post.find_by(id: params[:thread_id]).group_user
       if target_group_user.user_id != @user.id
-        createNotification(target_group_user.user, "#{@user.name}さんが返信しました。", "/groups/#{target_group_user.group.id}", post.group_user.image_url)
+        create_notification(target_group_user.user,
+                            "#{@user.name}さんが返信しました。",
+                            "/groups/#{target_group_user.group.id}",
+                            post.group_user.image_url)
       end
     end
 
@@ -153,6 +156,7 @@ class PostsController < ApplicationController
 
     render json: post.json
   end
+  # rubocop:enable Metrics/AbcSize
 
   private
 
