@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
+  include NotificationControllerModule
   before_action :authenticate, only: %i(update destroy create show)
-
   # get /posts
   def index
     params = posts_params
@@ -142,11 +142,17 @@ class PostsController < ApplicationController
       return
     end
 
+    if post.parent_id.present?
+      target_group_user = Post.find_by(id: params[:thread_id]).group_user
+      if target_group_user.user_id != @user.id
+        createNotification(target_group_user.user, "#{@user.name}さんが返信しました。", "/groups/#{target_group_user.group.id}", post.group_user.image_url)
+      end
+    end
+
     ActionCable.server.broadcast("group_#{group.id}", new: post.json)
 
     render json: post.json
   end
-  # rubocop:enable Metrics/AbcSize
 
   private
 

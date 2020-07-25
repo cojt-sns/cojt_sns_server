@@ -34,3 +34,6 @@ post3 = Post.create(content: "post3", group_user: group_user2, group_id: group1.
 post4 = Post.create(content: "post4", group_user: group_user2, group_id: group1.id, created_at: Time.now + 4.hour)
 post5 = Post.create(content: "post5", group_user: group_user3, group_id: group2.id, created_at: Time.now + 1.day)
 post = Post.create(content: "こんにちは！", group: group, group_user: group_user1)
+
+notification1 = Notification.create(content: "通知1", user: user, url: "/group/1")
+notification2 = Notification.create(content: "通知2", user: user, url: "/group/2")

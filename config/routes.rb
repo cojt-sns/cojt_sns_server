@@ -29,5 +29,7 @@ Rails.application.routes.draw do
 
   resources :posts, only: [:index, :show, :update, :destroy]
 
+  resources :notifications, only: [:index, :destroy]
+
   mount ActionCable.server => '/cable'
 end
