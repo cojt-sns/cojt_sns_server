@@ -5,7 +5,9 @@ class Notification < ApplicationRecord
     {
       "id": id,
       "content": content,
-      "url": url
+      "url": url,
+      "image": image,
+      "created_at": created_at
     }
   end
 end

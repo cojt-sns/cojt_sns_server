@@ -143,12 +143,20 @@ class PostsController < ApplicationController
     end
 
     if post.parent_id.present?
-      target_group_user = Post.find_by(id: params[:thread_id]).group_user
-      if target_group_user.user_id != @user.id
-        create_notification(target_group_user.user,
-                            "#{@user.name}さんが返信しました。",
-                            "/groups/#{target_group_user.group.id}",
-                            post.group_user.image_url)
+      targets = post.siblings
+      .map(&:group_user)
+      .uniq{|g| g.id}
+      .select{|g| g.id != post.group_user.id}
+      logger.debug(targets.length)
+      targets << post.parent.group_user
+
+      targets.each do |target_group_user|
+        if target_group_user.user_id != @user.id
+          create_notification(target_group_user.user,
+                              "\##{group.name}「#{post.parent.content.slice(0..10) || post.parent.content}」に#{@user.name}さんが返信しました。",
+                              "/groups/#{target_group_user.group.id}",
+                              post.group_user.image_url)
+        end
       end
     end
 
