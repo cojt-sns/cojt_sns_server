@@ -19,7 +19,7 @@ class User < ApplicationRecord
     unless email =~ %r{^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$}
       errors.add(:email, 'メールアドレスが適切でありません')
     end
-    error.add(:email, 'メールアドレスが既に登録されています') if User.where.not(id: id).where(email: email).exists?
+    errors.add(:email, 'メールアドレスが既に登録されています') if User.where.not(id: id).where(email: email).exists?
   }
 
   validate :groups, -> {
