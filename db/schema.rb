@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_24_202103) do
+ActiveRecord::Schema.define(version: 2020_07_26_203109) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -56,11 +56,22 @@ ActiveRecord::Schema.define(version: 2020_07_24_202103) do
     t.index ["user_id"], name: "index_group_users_on_user_id"
   end
 
+  create_table "group_words", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "word_id"
+    t.bigint "group_id"
+    t.index ["group_id"], name: "index_group_words_on_group_id"
+    t.index ["word_id"], name: "index_group_words_on_word_id"
+  end
+
   create_table "groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.integer "parent_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.float "frequency"
+    t.float "depth_score"
+    t.float "independency"
+    t.float "score"
   end
 
   create_table "notifications", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -97,10 +108,17 @@ ActiveRecord::Schema.define(version: 2020_07_24_202103) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "words", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.text "word", null: false
+    t.text "word_class", null: false
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "authenticate_tokens", "users"
   add_foreign_key "group_users", "groups"
   add_foreign_key "group_users", "users"
+  add_foreign_key "group_words", "groups"
+  add_foreign_key "group_words", "words"
   add_foreign_key "notifications", "users"
   add_foreign_key "posts", "groups"
 end
