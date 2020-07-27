@@ -1,5 +1,6 @@
 class GroupUsersController < ApplicationController
   include ImageControllerModule
+  include NotificationControllerModule
 
   before_action :authenticate, only: %i(update group_login_user authorization unauthorization)
 
@@ -97,6 +98,7 @@ class GroupUsersController < ApplicationController
     render json: group_user.json
   end
 
+  # rubocop:disable Metrics/AbcSize
   # post /group_users/:id/authorization
   def authorization
     if params[:id].nil? || params[:id] =~ /[^0-9]+/
@@ -109,7 +111,8 @@ class GroupUsersController < ApplicationController
       return
     end
 
-    if group_user.group.group_users.find_by(user: @user, admin: true).nil?
+    login_user = group_user.group.group_users.find_by(user: @user, admin: true)
+    if login_user.nil?
       render json: { "code": 403, "message": 'グループへの管理者権限が存在するユーザのみ権限を追加することができます' }, status: :forbidden
       return
     end
@@ -131,10 +134,15 @@ class GroupUsersController < ApplicationController
       return
     end
 
+    content = "#{login_user.name}が#{group_user.name}に\##{group_user.group.name}の管理者権限を与えました"
+    create_notification(group_user.user,
+                        content,
+                        "/groups/#{group_user.group.id}",
+                        group_user.image_url)
+
     render json: group_user.json
   end
 
-  # rubocop:disable Metrics/AbcSize
   # post /group_users/:id/unauthorization
   def unauthorization
     if params[:id].nil? || params[:id] =~ /[^0-9]+/
@@ -147,7 +155,8 @@ class GroupUsersController < ApplicationController
       return
     end
 
-    if group_user.group.group_users.find_by(user: @user, admin: true).nil?
+    login_user = group_user.group.group_users.find_by(user: @user, admin: true)
+    if login_user.nil?
       render json: { "code": 403, "message": 'グループへの管理者権限が存在するユーザのみ権限を変更することができます' }, status: :forbidden
       return
     end
@@ -172,6 +181,14 @@ class GroupUsersController < ApplicationController
     unless group_user.save
       render json: { "code": 500, "message": 'ユーザーの更新に失敗しました' }, status: :internal_server_error
       return
+    end
+
+    if login_user != group_user
+      content = "#{login_user.name}が#{group_user.name}から\##{group_user.group.name}の管理者権限を削除しました"
+      create_notification(group_user.user,
+                          content,
+                          "/groups/#{group_user.group.id}",
+                          group_user.image_url)
     end
 
     render json: group_user.json

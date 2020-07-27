@@ -153,7 +153,13 @@ class PostsController < ApplicationController
       targets.each do |target_group_user|
         next unless target_group_user.user_id != @user.id
 
-        content = "\##{group.name}「#{post.parent.content.slice(0..10) || post.parent.content}」に#{@user.name}さんが返信しました。"
+        post_content = post.parent.content.slice(0..10)
+        if post_content.blank?
+          post_content = post.parent.content
+        else
+          post_content += '...'
+        end
+        content = "\##{group.name}「#{post_content}」に#{post.group_user.name}さんが返信しました。"
         create_notification(target_group_user.user,
                             content,
                             "/groups/#{target_group_user.group.id}",

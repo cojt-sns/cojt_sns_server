@@ -2,7 +2,7 @@ class AuthenticateToken < ApplicationRecord
   belongs_to :user
 
   def check
-    res = active && last_access > Time.zone.now - 1.hour
+    res = active && last_access > Time.zone.now - 12.hours
 
     return false unless res
 

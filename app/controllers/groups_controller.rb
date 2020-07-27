@@ -1,6 +1,7 @@
 class GroupsController < ApplicationController
   include ImageControllerModule
   include GroupControllerModule
+  include NotificationControllerModule
 
   before_action :authenticate, only: %i(create update join leave)
   # rubocop:disable Metrics/AbcSize
@@ -23,7 +24,7 @@ class GroupsController < ApplicationController
       groups = groups.order(score: 'DESC')
 
       groups.each do |group|
-        update_score(group) if group.updated_at < Time.zone.now - 12.hours || group.score.nil?
+        update_score(group) if group.updated_at < Time.zone.now - 1.hour || group.score.nil?
       end
 
       render json: groups.map { |group| group.json_with_children(descendants) }
@@ -48,7 +49,7 @@ class GroupsController < ApplicationController
     groups = groups.order(score: 'DESC')
 
     groups.each do |group|
-      update_score(group) if group.updated_at < Time.zone.now - 12.hours || group.score.nil?
+      update_score(group) if group.updated_at < Time.zone.now - 1.hour || group.score.nil?
     end
 
     render json: groups.map { |group| group.json_with_children(descendants) }
@@ -89,7 +90,7 @@ class GroupsController < ApplicationController
       return
     end
 
-    update_score(group) if group.updated_at < Time.zone.now - 12.hours || group.score.nil?
+    update_score(group) if group.updated_at < Time.zone.now - 1.hour || group.score.nil?
 
     render json: group.json
   end
@@ -154,6 +155,14 @@ class GroupsController < ApplicationController
     unless group_user.save
       render json: { "code": 500, "message": 'グループの参加に失敗しました。' }, status: :internal_server_error
       return
+    end
+
+    group.group_users.where.not(id: group_user.id).each do |target_group_user|
+      content = "\##{group.name}に#{group_user.name}さんが参加しました。"
+      create_notification(target_group_user.user,
+                          content,
+                          "/groups/#{target_group_user.group.id}",
+                          group_user.image_url)
     end
 
     render json: { "code": 200, "message": 'successful operation' }
