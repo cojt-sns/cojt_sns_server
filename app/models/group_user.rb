@@ -37,7 +37,9 @@ class GroupUser < ApplicationRecord
     if image.present?
       Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)
     else
-      DEFAULT_IMAGE_PATH
+      return DEFAULT_IMAGE_PATH if user.private
+
+      user.image_url
     end
   end
 end
