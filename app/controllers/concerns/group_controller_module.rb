@@ -3,7 +3,6 @@ module GroupControllerModule
     group.words = []
 
     nm = Natto::MeCab.new('-N 2')
-    logger.info(nm)
     nm.parse(group.name) do |n|
       next if n.surface.empty?
 
@@ -29,18 +28,17 @@ module GroupControllerModule
     member = group.group_users.count
     member = 1 if member.zero?
 
-    group.frequency = 70 * Math.log(post.to_f / member, 20)
+    frequency = 70 * Math.log(post.to_f / member, 20)
+    group.frequency = frequency < 0 ? 0.0 : frequency
+
     depth_score = 10 * Math.log(group.tree_level + 1, 5)
     group.depth_score = depth_score > 10 ? 10.0 : depth_score
-    logger.debug(group.words.sum { |w| w.groups.count })
-    logger.debug(group.words.map(&:word))
+
     group.independency = 20.0 / (group.words.sum { |w| w.groups.count }.to_f / group.words.count)
 
     group.score = group.frequency + group.depth_score + group.independency
 
     group.save if is_save
-
-    logger.debug(group.id)
   end
   # rubocop:enable Metrics/AbcSize
 end
