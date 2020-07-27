@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_26_203109) do
+ActiveRecord::Schema.define(version: 2020_07_27_005223) do
 
   create_table "active_storage_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -109,8 +109,9 @@ ActiveRecord::Schema.define(version: 2020_07_26_203109) do
   end
 
   create_table "words", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.text "word", null: false
-    t.text "word_class", null: false
+    t.string "word", null: false
+    t.string "word_class", null: false
+    t.index ["word"], name: "index_words_on_word", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

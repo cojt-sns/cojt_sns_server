@@ -20,10 +20,10 @@ class GroupsController < ApplicationController
       groups = Group.all
       groups = Group.where(parent_id: nil) if descendants == -1
 
-      groups = groups.order(score: "DESC")
+      groups = groups.order(score: 'DESC')
 
       groups.each do |group|
-        update_score(group) if group.updated_at <  Time.zone.now - 12.hour
+        update_score(group) if group.updated_at < Time.zone.now - 12.hours || group.score.nil?
       end
 
       render json: groups.map { |group| group.json_with_children(descendants) }
@@ -45,10 +45,10 @@ class GroupsController < ApplicationController
         groups = groups.or(Group.where('name like ?', "%#{name}%"))
       end
     end
-    groups = groups.order(score: "DESC")
+    groups = groups.order(score: 'DESC')
 
     groups.each do |group|
-      update_score(group) if group.updated_at <  Time.zone.now - 12.hour
+      update_score(group) if group.updated_at < Time.zone.now - 12.hours || group.score.nil?
     end
 
     render json: groups.map { |group| group.json_with_children(descendants) }
@@ -89,7 +89,7 @@ class GroupsController < ApplicationController
       return
     end
 
-    update_score(group) if group.updated_at <  Time.zone.now - 12.hour
+    update_score(group) if group.updated_at < Time.zone.now - 12.hours || group.score.nil?
 
     render json: group.json
   end

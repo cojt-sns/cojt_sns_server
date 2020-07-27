@@ -36,7 +36,7 @@ class Group < ApplicationRecord
       "frequency": frequency,
       "depth_score": depth_score,
       "independency": independency,
-      "score": score,
+      "score": score
     }
   end
 
