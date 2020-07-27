@@ -4,7 +4,7 @@ ENV APP_ROOT /opt/app
 
 ENV LANG C.UTF-8
 
-RUN apt-get update && apt-get install -y build-essential libpq-dev vim apt-transport-https certbot
+RUN apt-get update && apt-get install -y build-essential libpq-dev vim apt-transport-https certbot mecab mecab-ipadic-utf8
 
 RUN gem install bundler
 
@@ -40,6 +40,8 @@ ENV BACK https://stg2.cojt-sns.work:4000
 ENV FRONT https://cojt-sns-stg.herokuapp.com
 ENV TWITTER_API_KEY ${TWITTER_API_KEY}
 ENV TWITTER_API_KEY_SECRET ${TWITTER_API_KEY_SECRET}
+ENV MECAB_PATH /usr/lib/x86_64-linux-gnu/libmecab.so.2
+ENV MECAB_CHARSET UTF-8
 
 EXPOSE 4000
 EXPOSE 80
