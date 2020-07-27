@@ -29,7 +29,7 @@ module GroupControllerModule
     member = 1 if member.zero?
 
     frequency = 70 * Math.log(post.to_f / member, 20)
-    group.frequency = frequency < 0 ? 0.0 : frequency
+    group.frequency = frequency.negative? ? 0.0 : frequency
 
     depth_score = 10 * Math.log(group.tree_level + 1, 5)
     group.depth_score = depth_score > 10 ? 10.0 : depth_score
