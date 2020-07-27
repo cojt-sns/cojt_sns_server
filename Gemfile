@@ -54,3 +54,5 @@ gem 'rubocop-rails'
 gem 'mini_magick'
 
 gem 'omniauth-twitter'
+
+gem 'natto'

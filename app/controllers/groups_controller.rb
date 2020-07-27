@@ -1,5 +1,6 @@
 class GroupsController < ApplicationController
   include ImageControllerModule
+  include GroupControllerModule
 
   before_action :authenticate, only: %i(create update join leave)
   # rubocop:disable Metrics/AbcSize
@@ -18,6 +19,13 @@ class GroupsController < ApplicationController
     if params[:name].nil?
       groups = Group.all
       groups = Group.where(parent_id: nil) if descendants == -1
+
+      groups = groups.order(score: 'DESC')
+
+      groups.each do |group|
+        update_score(group) if group.updated_at < Time.zone.now - 12.hours || group.score.nil?
+      end
+
       render json: groups.map { |group| group.json_with_children(descendants) }
       return
     end
@@ -36,6 +44,11 @@ class GroupsController < ApplicationController
       names.each do |name|
         groups = groups.or(Group.where('name like ?', "%#{name}%"))
       end
+    end
+    groups = groups.order(score: 'DESC')
+
+    groups.each do |group|
+      update_score(group) if group.updated_at < Time.zone.now - 12.hours || group.score.nil?
     end
 
     render json: groups.map { |group| group.json_with_children(descendants) }
@@ -57,6 +70,8 @@ class GroupsController < ApplicationController
       group_user.admin = true
       group_user.name = @user.name
 
+      update_score(group, false)
+
       group_user.save!
 
       render json: group.json
@@ -73,6 +88,8 @@ class GroupsController < ApplicationController
       render json: { "code": 404, "message": '該当するグループが存在しません。' }, status: :not_found
       return
     end
+
+    update_score(group) if group.updated_at < Time.zone.now - 12.hours || group.score.nil?
 
     render json: group.json
   end
@@ -94,6 +111,8 @@ class GroupsController < ApplicationController
     end
 
     group.attributes = group_params
+    update_words(group, false)
+    update_score(group, false)
 
     unless group.valid?
       render json: { "code": 400, "message": group.errors.messages.values.first }, status: :bad_request
