@@ -5,6 +5,10 @@ class Group < ApplicationRecord
   has_many :users, through: :group_users
   accepts_nested_attributes_for :group_users, allow_destroy: true
 
+  has_many :group_words, dependent: :destroy
+  has_many :words, through: :group_words
+  accepts_nested_attributes_for :group_words, allow_destroy: true
+
   has_many :posts, dependent: :destroy
 
   validates :name, format: { with: %r{\A[^\.\#@/\\]+\z} }
@@ -28,7 +32,11 @@ class Group < ApplicationRecord
       "name": name,
       "parent_id": parent_id,
       "fullname": fullname,
-      "member": member
+      "member": member,
+      "frequency": frequency,
+      "depth_score": depth_score,
+      "independency": independency,
+      "score": score,
     }
   end
 
